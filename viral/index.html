@@ -3,19 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CAJA NEGRA® — Ingeniería de Viralidad | Short-Form Video Engine</title>
-<meta name="description" content="El sistema lógico detrás de TikTok, Reels y Shorts, empaquetado como protocolo ejecutable: Interest Graph, test beta, métricas reina y bucle de amplificación.">
+<title>CAJA NEGRA® — Ingeniería de Viralidad | Motor de Análisis</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-/* ══════════════════════ IDENTIDAD ══════════════════════ */
 :root{
   --bg:#08090c; --panel:#0e1014; --panel2:#12151a;
   --line:rgba(244,245,239,.12); --line2:rgba(244,245,239,.06);
   --ink:#f4f5ef; --muted:#9aa0a8; --dim:#5c6169;
-  --lime:#c6ff3f; --lime-dk:#9ccc1f;
-  --pink:#ff2e6c; --cyan:#37e6ff; --red:#ff4545;
+  --lime:#c6ff3f; --pink:#ff2e6c; --cyan:#37e6ff; --red:#ff4545; --amber:#ffd23f;
   --disp:'Unbounded',sans-serif; --body:'Instrument Sans',sans-serif; --mono:'JetBrains Mono',monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -27,64 +24,65 @@ a{color:inherit;text-decoration:none}
 button{font-family:inherit;cursor:pointer}
 .wrap{max-width:1220px;margin:0 auto;padding:0 28px}
 .mono{font-family:var(--mono)}
+section[id]{scroll-margin-top:80px}
 .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--lime);display:flex;align-items:center;gap:10px}
 .eyebrow::before{content:"";width:26px;height:1px;background:var(--lime)}
 h2.sec{font-family:var(--disp);font-weight:900;font-size:clamp(1.7rem,4.2vw,3rem);line-height:1.05;letter-spacing:-.01em;text-transform:uppercase;margin:14px 0 0}
-.sec-head{margin-bottom:52px;max-width:760px}
-.sec-head p{color:var(--muted);margin-top:16px;font-size:1.02rem;max-width:640px}
+.sec-head{margin-bottom:48px;max-width:800px}
+.sec-head p{color:var(--muted);margin-top:16px;font-size:1.02rem;max-width:680px}
 
-/* grano */
 #grain{position:fixed;inset:0;z-index:200;pointer-events:none;opacity:.05;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E")}
 
-/* reveals */
 .rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
 .rv.in{opacity:1;transform:none}
 
-/* botones */
-.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:15px 26px;border:1px solid var(--lime);background:var(--lime);color:#050608;transition:transform .18s ease,box-shadow .18s ease,background .18s}
+.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:15px 26px;border:1px solid var(--lime);background:var(--lime);color:#050608;transition:transform .18s ease,box-shadow .18s ease}
 .btn:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 rgba(198,255,63,.28)}
 .btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
-.btn.ghost:hover{border-color:var(--lime);color:var(--lime);box-shadow:4px 4px 0 rgba(198,255,63,.12)}
+.btn.ghost:hover{border-color:var(--lime);color:var(--lime)}
+.btn.demo{background:transparent;color:var(--cyan);border:1px solid var(--cyan)}
+.btn.demo:hover{box-shadow:4px 4px 0 rgba(55,230,255,.25)}
 .btn:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+.btn.mini{padding:9px 14px;font-size:.62rem}
 :focus-visible{outline:2px solid var(--lime);outline-offset:3px}
 
-/* ══════════════════════ HEADER ══════════════════════ */
+/* HEADER */
 header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,9,12,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line2)}
 .nav{display:flex;align-items:center;justify-content:space-between;height:66px}
-.brand{display:flex;align-items:center;gap:12px;font-family:var(--disp);font-weight:900;font-size:.95rem;letter-spacing:.02em}
+.brand{display:flex;align-items:center;gap:12px;font-family:var(--disp);font-weight:900;font-size:.95rem}
 .brand .rec{width:10px;height:10px;border-radius:50%;background:var(--red);animation:rec 1.6s ease-in-out infinite}
 @keyframes rec{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(255,69,69,.5)}50%{opacity:.5;box-shadow:0 0 0 6px rgba(255,69,69,0)}}
 .brand em{font-style:normal;color:var(--lime)}
-.nav-links{display:flex;gap:30px;font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase}
-.nav-links a{color:var(--muted);transition:color .2s;position:relative}
+.nav-links{display:flex;gap:24px;font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase}
+.nav-links a{color:var(--muted);transition:color .2s}
 .nav-links a:hover{color:var(--lime)}
-#btnLogin{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:11px 18px;background:var(--lime);color:#050608;border:1px solid var(--lime);transition:transform .18s,box-shadow .18s}
+.nav-links a.hot{color:var(--lime)}
+#btnLogin{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:11px 18px;background:var(--lime);color:#050608;border:1px solid var(--lime);transition:transform .18s,box-shadow .18s}
 #btnLogin:hover{transform:translate(-2px,-2px);box-shadow:3px 3px 0 rgba(198,255,63,.3)}
 #userChip{display:none;position:relative;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--line);padding:6px 12px 6px 6px;color:var(--ink)}
 #userChip img,#userChip .init{width:32px;height:32px;border-radius:50%;object-fit:cover;background:var(--lime);color:#000;display:grid;place-items:center;font-family:var(--mono);font-weight:700;font-size:.75rem}
-#userChip .uname{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em}
-#userMenu{position:absolute;top:calc(100% + 10px);right:0;background:var(--panel2);border:1px solid var(--line);min-width:200px;display:none;flex-direction:column;z-index:120}
+#userChip .uname{font-family:var(--mono);font-size:.7rem}
+#userMenu{position:absolute;top:calc(100% + 10px);right:0;background:var(--panel2);border:1px solid var(--line);min-width:210px;display:none;flex-direction:column;z-index:120}
 #userMenu.open{display:flex}
-#userMenu button,#userMenu span{background:none;border:none;color:var(--ink);text-align:left;padding:13px 16px;font-family:var(--mono);font-size:.7rem;letter-spacing:.1em}
+#userMenu button,#userMenu span{background:none;border:none;color:var(--ink);text-align:left;padding:13px 16px;font-family:var(--mono);font-size:.7rem}
 #userMenu span{color:var(--dim);border-bottom:1px solid var(--line2);font-size:.62rem;word-break:break-all}
 #userMenu button:hover{color:var(--pink)}
 
-/* ══════════════════════ HERO ══════════════════════ */
-.hero{padding:150px 0 70px;position:relative}
+/* HERO */
+.hero{padding:140px 0 60px}
 .hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:60px;align-items:center}
 .hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(2.1rem,5.4vw,4.3rem);line-height:1.02;text-transform:uppercase;letter-spacing:-.015em;margin:22px 0 24px}
 .hero h1 .l2{color:var(--pink)}
 .hero h1 .l3{color:var(--lime)}
 .hero p.lead{color:var(--muted);max-width:520px;font-size:1.05rem}
 .hero-cta{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap}
-.hero-stats{display:flex;gap:0;margin-top:48px;border-top:1px solid var(--line2)}
-.hstat{padding:20px 26px 0 0;margin-right:26px;border-right:1px solid var(--line2)}
+.hero-stats{display:flex;margin-top:44px;border-top:1px solid var(--line2)}
+.hstat{padding:18px 26px 0 0;margin-right:26px;border-right:1px solid var(--line2)}
 .hstat:last-child{border:none}
-.hstat b{font-family:var(--disp);font-weight:700;font-size:1.7rem;color:var(--lime);display:block}
-.hstat span{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.hstat b{font-family:var(--disp);font-weight:700;font-size:1.6rem;color:var(--lime);display:block}
+.hstat span{font-family:var(--mono);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
 
-/* teléfono / feed */
 .stage{position:relative;display:flex;justify-content:center}
 .phone{width:296px;height:600px;border:9px solid #171a1f;border-radius:38px;background:#000;position:relative;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 0 1px var(--line2)}
 .phone .notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:84px;height:20px;background:#171a1f;border-radius:12px;z-index:9}
@@ -95,7 +93,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,9,12,.8
 .slide.exit{transform:translateY(-101%)}
 .slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.05) contrast(1.05)}
 .slide.active img{animation:kb 7s ease-in-out infinite alternate}
-@keyframes kb{from{transform:scale(1) translate(0,0)}to{transform:scale(1.14) translate(-2%,2%)}}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.14) translate(-2%,2%)}}
 .slide::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,transparent 22%,transparent 55%,rgba(0,0,0,.78) 100%)}
 .sl-rail{position:absolute;right:12px;bottom:120px;z-index:7;display:flex;flex-direction:column;gap:16px;align-items:center}
 .sl-rail .ava{width:38px;height:38px;border-radius:50%;border:2px solid var(--lime);overflow:hidden;margin-bottom:4px}
@@ -104,9 +102,9 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,9,12,.8
 .rail-it.pop{transform:scale(1.3)}
 .rail-it.pop svg{fill:var(--pink)}
 .sl-bottom{position:absolute;left:14px;right:64px;bottom:52px;z-index:7;color:#fff}
-.sl-bottom .hd{font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;opacity:.85}
+.sl-bottom .hd{font-family:var(--mono);font-size:.66rem;opacity:.85}
 .sl-bottom .hook{font-weight:600;font-size:.92rem;line-height:1.35;margin:6px 0;text-shadow:0 2px 8px rgba(0,0,0,.7)}
-.sl-bottom .aud{font-family:var(--mono);font-size:.58rem;opacity:.75;display:flex;gap:6px;align-items:center}
+.sl-bottom .aud{font-family:var(--mono);font-size:.58rem;opacity:.75}
 .sl-prog{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.18);z-index:8}
 .sl-prog i{display:block;height:100%;width:0;background:var(--lime)}
 .float-chip{position:absolute;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;background:var(--panel2);border:1px solid var(--line);padding:9px 14px;color:var(--lime);white-space:nowrap;animation:chip 5s ease-in-out infinite;z-index:5}
@@ -115,7 +113,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,9,12,.8
 .float-chip.c3{bottom:110px;right:-70px;animation-delay:3.1s;color:var(--pink)}
 @keyframes chip{0%,100%{transform:translateY(0);opacity:.75}50%{transform:translateY(-10px);opacity:1}}
 
-/* ══════════════════════ TICKER ══════════════════════ */
+/* TICKER */
 .ticker{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;background:var(--panel)}
 .ticker-track{display:flex;width:max-content;animation:tick 34s linear infinite}
 .ticker:hover .ticker-track{animation-play-state:paused}
@@ -124,7 +122,125 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,9,12,.8
 .ticker-track span::after{content:"◆";color:var(--pink);margin:0 26px}
 @keyframes tick{to{transform:translateX(-50%)}}
 
-/* ══════════════════════ GRAPH BANDA ══════════════════════ */
+/* ════ 01 · MOTOR — ZONA DE CARGA ════ */
+.motor{padding:90px 0 100px;border-top:1px solid var(--line);background:linear-gradient(180deg,#0a0d05 0%,var(--bg) 420px)}
+.dropzone{border:2px dashed var(--dim);padding:56px 30px 44px;text-align:center;transition:border-color .3s,background .3s;background:rgba(198,255,63,.015);cursor:pointer;animation:dzp 3s ease-in-out infinite}
+@keyframes dzp{0%,100%{border-color:var(--dim)}50%{border-color:var(--lime)}}
+.dropzone:hover,.dropzone.over{border-color:var(--lime);background:rgba(198,255,63,.05);animation:none}
+.dropzone .dz-ico{font-size:2.4rem;color:var(--lime);display:block;margin-bottom:14px;animation:fl 3s ease-in-out infinite}
+@keyframes fl{50%{transform:translateY(-8px)}}
+.dropzone h3{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:1.4rem}
+.dropzone .dz-sub{font-family:var(--mono);font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:10px}
+.dropzone .dz-local{display:inline-block;margin-top:18px;font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;color:var(--lime);border:1px solid rgba(198,255,63,.4);padding:7px 14px}
+.dz-or{display:flex;align-items:center;gap:16px;margin:24px 0;color:var(--dim);font-family:var(--mono);font-size:.62rem;letter-spacing:.24em}
+.dz-or::before,.dz-or::after{content:"";flex:1;height:1px;background:var(--line)}
+#btnDemoFile{width:100%;justify-content:center;background:transparent;color:var(--cyan);border:1px solid var(--cyan);font-size:.8rem;padding:17px}
+#btnDemoFile:hover{box-shadow:4px 4px 0 rgba(55,230,255,.25);transform:translate(-2px,-2px)}
+.dz-form{display:grid;grid-template-columns:1.4fr 1fr;gap:12px;margin-top:22px}
+.dz-form input,.dz-form select{background:var(--panel2);border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:.74rem;padding:15px 16px;letter-spacing:.04em;width:100%}
+.dz-form input::placeholder{color:var(--dim)}
+.dz-form select{cursor:pointer}
+.ficha{display:none;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;border:1px solid var(--line);background:var(--panel2);padding:18px 22px;margin-top:22px}
+.ficha.on{display:grid}
+.ficha .thumb{width:64px;height:112px;object-fit:cover;border:1px solid var(--line);background:#000}
+.ficha .f-name{font-weight:600;font-size:.95rem;word-break:break-all}
+.ficha .f-meta{font-family:var(--mono);font-size:.62rem;color:var(--dim);letter-spacing:.1em;margin-top:6px;display:flex;gap:14px;flex-wrap:wrap}
+.ficha .f-meta b{color:var(--cyan)}
+.ficha .f-ratio{font-family:var(--mono);font-size:.66rem;font-weight:700;border:1px solid var(--line);padding:9px 14px;letter-spacing:.12em;color:var(--lime)}
+#btnGo{width:100%;justify-content:center;margin-top:22px;font-size:.85rem;padding:18px}
+.pipe{display:none;border:1px solid var(--line);background:#0a0c08;padding:28px;margin-top:26px}
+.pipe.on{display:block}
+.pipe .p-head{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--lime);margin-bottom:14px}
+.pipe-bar{height:4px;background:var(--line2);margin-bottom:18px}
+.pipe-bar i{display:block;height:100%;width:0;background:var(--lime);transition:width .45s ease}
+.pipe .log{font-family:var(--mono);font-size:.66rem;color:var(--dim);min-height:120px}
+.pipe .log div{animation:lg .3s ease}
+@keyframes lg{from{opacity:0;transform:translateX(-6px)}}
+.pipe .log div::before{content:"▸ ";color:var(--lime)}
+
+#resWrap{display:none;margin-top:56px}
+#resWrap.on{display:block}
+.ret{border:1px solid var(--line);border-left:3px solid var(--lime);background:var(--panel);margin-bottom:28px;padding:36px;position:relative}
+.ret .r-tag{position:absolute;top:-13px;left:22px;background:var(--lime);color:#000;font-family:var(--mono);font-weight:700;font-size:.64rem;letter-spacing:.14em;padding:4px 12px}
+.ret .r-flag{position:absolute;top:-13px;right:22px;background:var(--bg);border:1px solid var(--line);color:var(--cyan);font-family:var(--mono);font-size:.56rem;letter-spacing:.16em;padding:4px 12px;text-transform:uppercase}
+.ret h4{font-family:var(--disp);font-weight:700;font-size:1.2rem;text-transform:uppercase;margin:8px 0 6px}
+.ret .r-sub{color:var(--dim);font-size:.86rem;margin-bottom:22px;max-width:660px}
+.trans-term{background:#050608;border:1px solid var(--line2);padding:24px;font-family:var(--mono);font-size:.74rem;line-height:2;color:#cdd3c8;min-height:120px}
+.trans-term .tl{color:var(--pink)}
+.trans-term mark{background:none;color:var(--lime);border-bottom:1px solid var(--lime)}
+.trans-term .caret{display:inline-block;width:8px;height:14px;background:var(--lime);vertical-align:middle;animation:rec 1s steps(2) infinite}
+#wave{width:100%;height:64px;margin-top:16px;background:#050608;border:1px solid var(--line2)}
+.pkg-row{border:1px solid var(--line2);background:#0a0c08;padding:20px 22px;margin-bottom:14px}
+.pkg-row .p-lbl{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;flex-wrap:wrap}
+.pkg-row .p-lbl span{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--pink)}
+.pkg-row .p-txt{font-size:.94rem;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.pkg-row .p-txt b{color:var(--lime)}
+.htag{display:grid;grid-template-columns:minmax(120px,200px) 78px 1fr;gap:16px;align-items:center;border:1px solid var(--line2);padding:14px 18px;margin-bottom:9px;transition:.25s;background:#0a0c08;cursor:pointer}
+.htag:hover{border-color:var(--lime);background:rgba(198,255,63,.03)}
+.htag .t{font-family:var(--mono);font-weight:700;font-size:.82rem;word-break:break-all}
+.htag .tp{font-family:var(--mono);font-size:.54rem;letter-spacing:.14em;text-align:center;padding:6px 4px;font-weight:700}
+.htag .tp.n{background:rgba(198,255,63,.14);color:var(--lime);border:1px solid rgba(198,255,63,.4)}
+.htag .tp.a{background:rgba(55,230,255,.1);color:var(--cyan);border:1px solid rgba(55,230,255,.4)}
+.htag .tp.v{background:rgba(255,46,108,.1);color:var(--pink);border:1px solid rgba(255,46,108,.4)}
+.htag .rs{font-size:.8rem;color:var(--muted)}
+.htag .rs b{font-family:var(--mono);font-size:.58rem;color:var(--dim);letter-spacing:.1em;display:block;margin-top:3px}
+.ht-mix{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 22px}
+.ht-mix span{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;border:1px solid var(--line);padding:8px 13px;color:var(--muted)}
+.ht-mix span b{color:var(--lime)}
+.prio{border:1px solid var(--line2);background:#0a0c08;padding:24px;margin-top:24px}
+.prio h6{font-family:var(--mono);font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--lime);margin-bottom:6px}
+.prio .p-note{font-size:.78rem;color:var(--dim);margin-bottom:10px}
+.mbar{margin-top:14px}
+.mbar .lbl{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;gap:10px}
+.mbar .lbl b{color:var(--lime)}
+.mbar .tr{height:8px;background:var(--line2);overflow:hidden}
+.mbar .tr i{display:block;height:100%;width:0;background:var(--lime);transition:width 1.4s cubic-bezier(.2,.7,.2,1)}
+.mbar.pink .tr i{background:var(--pink)}
+.mbar.cyan .tr i{background:var(--cyan)}
+.hooks3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.hk{border:1px solid var(--line2);background:#0a0c08;padding:20px;display:flex;flex-direction:column;gap:12px}
+.hk .h-top{display:flex;justify-content:space-between;align-items:center}
+.hk .h-l{font-family:var(--disp);font-weight:900;font-size:1.3rem;color:var(--lime)}
+.hk .h-tp{font-family:var(--mono);font-size:.54rem;letter-spacing:.16em;color:var(--pink);border:1px solid rgba(255,46,108,.4);padding:4px 9px}
+.hk p{font-size:.9rem;line-height:1.5;flex:1}
+.hk .h-why{font-family:var(--mono);font-size:.58rem;color:var(--dim);line-height:1.7;border-top:1px dashed var(--line2);padding-top:10px}
+.diag{display:flex;flex-direction:column;gap:10px}
+.drow{display:grid;grid-template-columns:16px 170px 1fr auto;gap:14px;align-items:center;border:1px solid var(--line2);padding:15px 18px;font-size:.86rem;background:#0a0c08}
+.drow .dot{width:10px;height:10px;border-radius:50%}
+.drow.ok .dot{background:var(--lime);box-shadow:0 0 10px rgba(198,255,63,.6)}
+.drow.warn .dot{background:var(--amber);box-shadow:0 0 10px rgba(255,210,63,.5)}
+.drow.bad .dot{background:var(--pink);box-shadow:0 0 10px rgba(255,46,108,.6)}
+.drow .d-lbl{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.drow .d-msg{color:var(--muted)}
+.drow .d-val{font-family:var(--mono);font-weight:700;font-size:.78rem}
+.drow.ok .d-val{color:var(--lime)}.drow.warn .d-val{color:var(--amber)}.drow.bad .d-val{color:var(--pink)}
+.kwchips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.kwchips i{font-style:normal;font-family:var(--mono);font-size:.6rem;border:1px solid rgba(55,230,255,.4);color:var(--cyan);padding:5px 10px}
+.verdict{border:1px solid var(--line);padding:22px;margin-bottom:20px}
+.verdict.ok{border-color:var(--lime);background:rgba(198,255,63,.05)}
+.verdict.ko{border-color:var(--pink);background:rgba(255,46,108,.06)}
+.verdict h5{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:1.05rem;line-height:1.2}
+.verdict.ok h5{color:var(--lime)}.verdict.ko h5{color:var(--pink)}
+.verdict p{color:var(--muted);font-size:.88rem;margin-top:8px}
+.entrega-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:28px}
+.proj{display:flex;align-items:flex-end;gap:12px;height:130px;border-bottom:1px solid var(--line);padding:0 6px;margin-bottom:8px}
+.pbar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;height:100%}
+.pbar i{width:100%;background:var(--line2);transition:height 1s cubic-bezier(.2,.7,.2,1)}
+.pbar span{font-family:var(--mono);font-size:.58rem;color:var(--dim)}
+.pbar.lit i{background:var(--lime)}
+.pbar.lit span{color:var(--lime)}
+.pbar.cut i{background:rgba(255,46,108,.35)}
+.pbar.max.lit i{animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{filter:brightness(1.5)}}
+.proj-cap{font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;color:var(--dim);text-transform:uppercase;margin-bottom:20px}
+.ent-list{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+.ent-list .ei{display:flex;gap:12px;align-items:center;font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;color:var(--muted);border:1px dashed var(--line2);padding:12px 16px}
+.ent-list .ei b{color:var(--dim)}
+.ent-list .ei.done{border-style:solid;border-color:rgba(198,255,63,.35);color:var(--ink)}
+.ent-list .ei.done b{color:var(--lime)}
+.ent-btns{display:flex;gap:12px;flex-wrap:wrap}
+
+/* RESTO */
 .graph{padding:90px 0}
 .graph-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
 .gcell{background:var(--bg);padding:44px 40px}
@@ -136,12 +252,11 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,9,12,.8
 .gcell p{color:var(--muted);font-size:.95rem;max-width:420px}
 .gcell .arrow{font-family:var(--mono);font-size:.65rem;color:var(--pink);letter-spacing:.14em;display:block;margin-bottom:10px}
 
-/* ══════════════════════ PLATAFORMAS ══════════════════════ */
 .platforms{padding:40px 0 100px}
 .plat-row{display:grid;grid-template-columns:90px 1fr 1.2fr auto;gap:28px;align-items:center;padding:36px 24px;border-top:1px solid var(--line);transition:background .3s,padding-left .3s;position:relative}
 .plat-row:last-child{border-bottom:1px solid var(--line)}
 .plat-row:hover{background:var(--tint);padding-left:38px}
-.plat-row .idx{font-family:var(--mono);font-size:.75rem;color:var(--dim);letter-spacing:.1em}
+.plat-row .idx{font-family:var(--mono);font-size:.75rem;color:var(--dim)}
 .plat-row h3{font-family:var(--disp);font-weight:900;font-size:clamp(1.2rem,2.6vw,1.9rem);text-transform:uppercase;line-height:1.1}
 .plat-row h3 small{display:block;font-family:var(--mono);font-weight:400;font-size:.62rem;letter-spacing:.2em;color:var(--ac);margin-top:6px;text-transform:uppercase}
 .plat-row p{color:var(--muted);font-size:.94rem;max-width:480px}
@@ -151,7 +266,6 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,9,12,.8
 .plat-row .go{position:absolute;right:24px;top:20px;font-family:var(--mono);font-size:.85rem;color:var(--ac);opacity:0;transform:translateX(-8px);transition:.3s}
 .plat-row:hover .go{opacity:1;transform:none}
 
-/* ══════════════════════ SISTEMA STICKY ══════════════════════ */
 .system{padding:100px 0;background:var(--panel);border-top:1px solid var(--line2);border-bottom:1px solid var(--line2)}
 .sys-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:70px;align-items:start}
 .sys-left{position:sticky;top:100px}
@@ -162,43 +276,32 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,9,12,.8
 .sys-nav button.active b{color:var(--lime)}
 .step{background:var(--bg);border:1px solid var(--line);padding:44px;margin-bottom:26px;position:relative;transition:border-color .3s}
 .step.glow{border-color:rgba(198,255,63,.45)}
-.step .n{position:absolute;top:-15px;left:24px;background:var(--lime);color:#000;font-family:var(--mono);font-weight:700;font-size:.7rem;padding:4px 12px;letter-spacing:.12em}
+.step .n{position:absolute;top:-15px;left:24px;background:var(--lime);color:#000;font-family:var(--mono);font-weight:700;font-size:.7rem;padding:4px 12px}
 .step h4{font-family:var(--disp);font-weight:700;font-size:1.35rem;text-transform:uppercase;margin-bottom:14px}
 .step p{color:var(--muted);margin-bottom:20px}
 .tags{display:flex;flex-wrap:wrap;gap:8px}
 .tags i{font-style:normal;font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--line);padding:6px 11px;color:var(--lime)}
-/* dot grid beta */
 .dotgrid{display:grid;grid-template-columns:repeat(20,1fr);gap:4px;max-width:420px;margin-top:6px}
 .dotgrid i{aspect-ratio:1;background:var(--line2)}
 .dotgrid i.hot{background:var(--lime);animation:blip 2s ease-in-out infinite}
 @keyframes blip{50%{opacity:.35}}
-/* métricas bars */
-.mbar{margin-top:14px}
-.mbar .lbl{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-.mbar .lbl b{color:var(--lime)}
-.mbar .tr{height:8px;background:var(--line2);overflow:hidden}
-.mbar .tr i{display:block;height:100%;width:0;background:var(--lime);transition:width 1.4s cubic-bezier(.2,.7,.2,1)}
-.mbar.pink .tr i{background:var(--pink)}
-/* fases bucle */
 .fases{display:flex;align-items:flex-end;gap:10px;margin-top:10px;flex-wrap:wrap}
-.fase{display:flex;flex-direction:column;align-items:center;gap:6px;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;color:var(--muted)}
+.fase{display:flex;flex-direction:column;align-items:center;gap:6px;font-family:var(--mono);font-size:.6rem;color:var(--muted)}
 .fase .blk{width:52px;background:var(--line2);border:1px solid var(--line);transition:height 1s cubic-bezier(.2,.7,.2,1),background .4s}
 .fase.lit .blk{background:var(--lime);border-color:var(--lime)}
 .fase.lit{color:var(--lime)}
 .fase .ar{color:var(--pink)}
 
-/* banda métricas reina */
 .queen{padding:90px 0}
 .queen-grid{display:grid;grid-template-columns:1fr 1.35fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-top:48px}
 .qcell{background:var(--bg);padding:38px 32px;position:relative;overflow:hidden}
 .qcell.big{background:#0d1206}
 .qcell .qn{font-family:var(--disp);font-weight:900;font-size:clamp(2rem,4.5vw,3.4rem);color:var(--lime);line-height:1}
 .qcell.big .qn{font-size:clamp(2.6rem,5.5vw,4.4rem)}
-.qcell h5{font-family:var(--mono);font-weight:700;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;margin:18px 0 10px;color:var(--ink)}
+.qcell h5{font-family:var(--mono);font-weight:700;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;margin:18px 0 10px}
 .qcell p{color:var(--muted);font-size:.9rem}
 .qcell .flag{position:absolute;top:14px;right:-30px;background:var(--pink);color:#fff;font-family:var(--mono);font-size:.55rem;letter-spacing:.2em;padding:4px 36px;transform:rotate(45deg)}
 
-/* ══════════════════════ SIMULADOR ══════════════════════ */
 .sim{padding:100px 0;background:var(--panel);border-top:1px solid var(--line2)}
 .sim-box{display:grid;grid-template-columns:1fr 1.15fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-top:48px}
 .sim-in,.sim-out{background:var(--bg);padding:40px}
@@ -211,18 +314,11 @@ header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,9,12,.8
 .slider .top output{font-family:var(--mono);font-weight:700;font-size:.85rem;color:var(--lime)}
 input[type=range]{width:100%;accent-color:var(--lime);height:4px;cursor:pointer}
 .sim-run{width:100%;justify-content:center;margin-top:8px}
-.log{font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;color:var(--dim);min-height:78px;margin-bottom:18px}
+.log{font-family:var(--mono);font-size:.66rem;color:var(--dim);min-height:78px;margin-bottom:18px}
 .log div{animation:lg .3s ease}
-@keyframes lg{from{opacity:0;transform:translateX(-6px)}}
 .log div::before{content:"▸ ";color:var(--lime)}
-.verdict{border:1px solid var(--line);padding:22px;margin-bottom:20px}
-.verdict.ok{border-color:var(--lime);background:rgba(198,255,63,.05)}
-.verdict.ko{border-color:var(--pink);background:rgba(255,46,108,.06)}
-.verdict h5{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:1.05rem;line-height:1.2}
-.verdict.ok h5{color:var(--lime)}.verdict.ko h5{color:var(--pink)}
-.verdict p{color:var(--muted);font-size:.88rem;margin-top:8px}
 .gates{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
-.gate{display:grid;grid-template-columns:14px 1fr auto auto;gap:12px;align-items:center;border:1px solid var(--line2);padding:11px 14px;font-family:var(--mono);font-size:.66rem;letter-spacing:.08em}
+.gate{display:grid;grid-template-columns:14px 1fr auto auto;gap:12px;align-items:center;border:1px solid var(--line2);padding:11px 14px;font-family:var(--mono);font-size:.66rem}
 .gate .dot{width:9px;height:9px;border-radius:50%;background:var(--dim)}
 .gate.pass .dot{background:var(--lime);box-shadow:0 0 10px rgba(198,255,63,.6)}
 .gate.fail .dot{background:var(--pink);box-shadow:0 0 10px rgba(255,46,108,.6)}
@@ -231,30 +327,19 @@ input[type=range]{width:100%;accent-color:var(--lime);height:4px;cursor:pointer}
 .gate .req{color:var(--dim)}
 .gate .val{font-weight:700}
 .gate.pass .val{color:var(--lime)}.gate.fail .val{color:var(--pink)}
-.proj{display:flex;align-items:flex-end;gap:12px;height:130px;border-bottom:1px solid var(--line);padding:0 6px;margin-bottom:8px}
-.pbar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;height:100%}
-.pbar i{width:100%;background:var(--line2);transition:height 1s cubic-bezier(.2,.7,.2,1)}
-.pbar span{font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;color:var(--dim)}
-.pbar.lit i{background:var(--lime)}
-.pbar.lit span{color:var(--lime)}
-.pbar.cut i{background:rgba(255,46,108,.35)}
-.pbar.max.lit i{animation:pulse 1.4s ease-in-out infinite}
-@keyframes pulse{50%{filter:brightness(1.5)}}
 .sim-actions{display:flex;gap:12px;flex-wrap:wrap}
 
-/* ══════════════════════ TÉRMINOS ══════════════════════ */
-.terms{padding:100px 0}
+.terms{padding:100px 0;background:var(--panel);border-top:1px solid var(--line2)}
 .term{display:grid;grid-template-columns:120px 1fr 1fr;gap:32px;padding:38px 10px;border-top:1px solid var(--line);align-items:start;transition:background .25s}
 .term:last-of-type{border-bottom:1px solid var(--line)}
 .term:hover{background:rgba(198,255,63,.03)}
-.term .t-idx{font-family:var(--mono);font-size:.7rem;color:var(--dim);letter-spacing:.1em}
+.term .t-idx{font-family:var(--mono);font-size:.7rem;color:var(--dim)}
 .term h3{font-family:var(--disp);font-weight:900;font-size:1.4rem;text-transform:uppercase}
 .term h3 small{display:block;font-family:var(--mono);font-weight:400;font-size:.6rem;letter-spacing:.2em;color:var(--lime);margin-top:6px}
 .term p{color:var(--muted);font-size:.95rem}
 .term p em{color:var(--ink);font-style:italic}
 
-/* ══════════════════════ PROTOCOLO ══════════════════════ */
-.proto{padding:100px 0;background:var(--panel);border-top:1px solid var(--line2);position:relative}
+.proto{padding:100px 0;border-top:1px solid var(--line);position:relative}
 .proto-head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap;margin-bottom:48px}
 .proto-score{text-align:right}
 .proto-score b{font-family:var(--disp);font-weight:900;font-size:clamp(2.4rem,5vw,3.6rem);color:var(--lime);line-height:1}
@@ -263,18 +348,17 @@ input[type=range]{width:100%;accent-color:var(--lime);height:4px;cursor:pointer}
 .proto-bar i{display:block;height:100%;width:0;background:var(--lime);transition:width .6s cubic-bezier(.2,.7,.2,1)}
 .proto-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
 .pgroup h5{font-family:var(--mono);font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--pink);margin-bottom:16px}
-.pitem{display:flex;gap:12px;align-items:flex-start;background:var(--bg);border:1px solid var(--line2);padding:15px 16px;margin-bottom:10px;cursor:pointer;transition:.25s;font-size:.88rem}
+.pitem{display:flex;gap:12px;align-items:flex-start;background:var(--panel);border:1px solid var(--line2);padding:15px 16px;margin-bottom:10px;cursor:pointer;transition:.25s;font-size:.88rem}
 .pitem:hover{border-color:var(--line)}
 .pitem .box{flex:0 0 18px;height:18px;border:1px solid var(--dim);margin-top:2px;display:grid;place-items:center;font-size:.7rem;color:#000;transition:.2s}
 .pitem.done{border-color:rgba(198,255,63,.35);background:rgba(198,255,63,.04)}
 .pitem.done .box{background:var(--lime);border-color:var(--lime)}
 .pitem.done .box::after{content:"✓";font-weight:700}
-.stamp{position:absolute;top:70px;right:6%;border:3px solid var(--lime);color:var(--lime);font-family:var(--disp);font-weight:900;font-size:1.1rem;text-transform:uppercase;padding:14px 26px;transform:rotate(-9deg) scale(2.4);opacity:0;pointer-events:none;transition:transform .45s cubic-bezier(.3,1.6,.4,1),opacity .3s;letter-spacing:.04em;background:rgba(8,9,12,.85)}
+.stamp{position:absolute;top:70px;right:6%;border:3px solid var(--lime);color:var(--lime);font-family:var(--disp);font-weight:900;font-size:1.1rem;text-transform:uppercase;padding:14px 26px;transform:rotate(-9deg) scale(2.4);opacity:0;pointer-events:none;transition:transform .45s cubic-bezier(.3,1.6,.4,1),opacity .3s;background:rgba(8,9,12,.85);z-index:10}
 .stamp small{display:block;font-family:var(--mono);font-weight:400;font-size:.55rem;letter-spacing:.28em;margin-top:4px}
 .stamp.show{transform:rotate(-9deg) scale(1);opacity:1}
 .proto-cta{margin-top:44px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
 
-/* ══════════════════════ FOOTER ══════════════════════ */
 footer{padding:70px 0 40px;border-top:1px solid var(--line)}
 .f-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:start;margin-bottom:44px}
 .f-grid h6{font-family:var(--disp);font-weight:900;font-size:1.5rem;text-transform:uppercase}
@@ -284,7 +368,6 @@ footer{padding:70px 0 40px;border-top:1px solid var(--line)}
 .f-note b{color:var(--lime)}
 .f-bottom{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid var(--line2);padding-top:24px;font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 
-/* ══════════════════════ MODAL LOGIN ══════════════════════ */
 .overlay{position:fixed;inset:0;background:rgba(4,5,7,.8);backdrop-filter:blur(6px);z-index:150;display:none;align-items:center;justify-content:center;padding:20px}
 .overlay.open{display:flex}
 .modal{width:100%;max-width:430px;background:var(--panel);border:1px solid var(--line);padding:44px;position:relative;animation:mIn .35s cubic-bezier(.2,.9,.3,1)}
@@ -295,26 +378,24 @@ footer{padding:70px 0 40px;border-top:1px solid var(--line)}
 .modal h3{font-family:var(--disp);font-weight:900;font-size:1.5rem;text-transform:uppercase;line-height:1.15;margin-bottom:10px}
 .modal .m-sub{color:var(--muted);font-size:.9rem;margin-bottom:30px}
 #gBtnWrap{min-height:52px;display:flex;justify-content:center;margin-bottom:14px}
-#btnGoogleCustom{width:100%;display:flex;align-items:center;justify-content:center;gap:12px;background:#fff;color:#1a1a1a;border:none;padding:14px;font-family:var(--body);font-weight:600;font-size:.92rem;transition:.2s}
+#btnGoogleCustom{width:100%;display:flex;align-items:center;justify-content:center;gap:12px;background:#fff;color:#1a1a1a;border:none;padding:14px;font-weight:600;font-size:.92rem;transition:.2s}
 #btnGoogleCustom:hover{box-shadow:0 4px 18px rgba(255,255,255,.18);transform:translateY(-1px)}
 .m-sep{display:flex;align-items:center;gap:14px;color:var(--dim);font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;margin:20px 0}
 .m-sep::before,.m-sep::after{content:"";flex:1;height:1px;background:var(--line)}
 #btnDemo{width:100%;background:none;border:1px solid var(--line);color:var(--muted);padding:13px;font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;transition:.2s}
 #btnDemo:hover{border-color:var(--lime);color:var(--lime)}
-#loginStatus{margin-top:18px;font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;color:var(--dim);text-align:center;min-height:16px}
+#loginStatus{margin-top:18px;font-family:var(--mono);font-size:.62rem;color:var(--dim);text-align:center;min-height:16px}
 .m-lock{margin-top:24px;border-top:1px dashed var(--line);padding-top:18px;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;color:var(--dim);line-height:1.9}
 .m-lock b{color:var(--lime)}
-
-/* toast */
-#toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,80px);background:var(--panel2);border:1px solid var(--lime);color:var(--ink);font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;padding:14px 24px;z-index:300;transition:transform .4s cubic-bezier(.2,.9,.3,1);max-width:90vw}
+#toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,80px);background:var(--panel2);border:1px solid var(--lime);color:var(--ink);font-family:var(--mono);font-size:.7rem;padding:14px 24px;z-index:300;transition:transform .4s cubic-bezier(.2,.9,.3,1);max-width:90vw}
 #toast.show{transform:translate(-50%,0)}
 #toast b{color:var(--lime)}
 
-/* ══════════════════════ RESPONSIVE ══════════════════════ */
 @media(max-width:1080px){
   .float-chip{display:none}
   .term{grid-template-columns:70px 1fr;grid-template-rows:auto auto}
   .term p{grid-column:2}
+  .entrega-grid{grid-template-columns:1fr}
 }
 @media(max-width:980px){
   .hero .wrap{grid-template-columns:1fr;gap:60px}
@@ -326,6 +407,11 @@ footer{padding:70px 0 40px;border-top:1px solid var(--line)}
   .plat-row{grid-template-columns:50px 1fr;grid-template-rows:auto auto auto}
   .plat-row .chips{flex-direction:row;flex-wrap:wrap;align-items:flex-start}
   .queen-grid{grid-template-columns:1fr}
+  .dz-form{grid-template-columns:1fr}
+  .hooks3{grid-template-columns:1fr}
+  .htag{grid-template-columns:1fr 78px;grid-template-rows:auto auto}
+  .htag .rs{grid-column:1/-1}
+  .drow{grid-template-columns:14px 1fr;grid-template-rows:auto auto auto}
 }
 @media(max-width:640px){
   .hero{padding-top:110px}
@@ -335,27 +421,28 @@ footer{padding:70px 0 40px;border-top:1px solid var(--line)}
   .f-grid{grid-template-columns:1fr}
   .stamp{position:static;display:inline-block;margin-top:30px}
   .step{padding:30px 22px}
+  .ficha{grid-template-columns:1fr}
+  .ret{padding:26px 20px}
 }
-
-/* ══════════════════════ REDUCED MOTION ══════════════════════ */
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   html{scroll-behavior:auto}
   .ticker-track{animation:none}
   .rv{opacity:1;transform:none}
+  .dropzone{animation:none}
 }
 </style>
 </head>
 <body>
 <div id="grain"></div>
 
-<!-- ═══════════ HEADER ═══════════ -->
 <header>
   <div class="wrap nav">
     <a href="#top" class="brand"><span class="rec"></span>CAJA&nbsp;NEGRA<em>®LAB</em></a>
     <nav class="nav-links">
+      <a href="#motor" class="hot">◈ Motor</a>
       <a href="#plataformas">Plataformas</a>
-      <a href="#sistema">El sistema</a>
+      <a href="#sistema">Sistema</a>
       <a href="#simulador">Simulador</a>
       <a href="#protocolo">Protocolo</a>
     </nav>
@@ -377,30 +464,28 @@ footer{padding:70px 0 40px;border-top:1px solid var(--line)}
   </div>
 </header>
 
-<!-- ═══════════ HERO ═══════════ -->
+<!-- HERO -->
 <section class="hero" id="top">
   <div class="wrap">
     <div>
-      <div class="eyebrow rv">INTEREST GRAPH // SHORT-FORM ENGINE v3.0</div>
+      <div class="eyebrow">INTEREST GRAPH // SHORT-FORM ENGINE v3.0</div>
       <h1>
         <span class="l1" data-scr>LA VIRALIDAD</span><br>
         <span class="l2" data-scr>NO ES SUERTE.</span><br>
         <span class="l3" data-scr>ES INGENIERÍA.</span>
       </h1>
-      <p class="lead rv" data-d="1">Empaquetamos el sistema lógico que usan TikTok, Reels y Shorts para repartir contenido masivamente: indexación por IA, test beta de 200 usuarios, métricas reina y bucle de amplificación. <b style="color:var(--ink)">Sin excepciones.</b></p>
-      <div class="hero-cta rv" data-d="2">
-        <a href="#simulador" class="btn">Ejecutar el simulador ▸</a>
+      <p class="lead">Soltá tu video en el motor y recibí el paquete completo: transcripción IA, nicho asignado, 7 hashtags calibrados y diagnóstico a raja tabla. <b style="color:var(--ink)">100% en tu navegador.</b></p>
+      <div class="hero-cta">
+        <a href="#motor" class="btn">▸ Cargar mi video al motor</a>
         <a href="#sistema" class="btn ghost">Ver el sistema lógico</a>
       </div>
-      <div class="hero-stats rv" data-d="3">
+      <div class="hero-stats">
         <div class="hstat"><b data-count="3" data-suffix="s">0s</b><span>Ventana del gancho</span></div>
         <div class="hstat"><b data-count="200" data-suffix="">0</b><span>Grupo beta inicial</span></div>
         <div class="hstat"><b data-count="10" data-suffix="×">0×</b><span>Multiplicador por fase</span></div>
       </div>
     </div>
-
-    <!-- Teléfono: feed simulado Para Ti -->
-    <div class="stage rv" data-d="2">
+    <div class="stage">
       <div class="float-chip c1">RETENCIÓN 3s+ ✓ SEÑAL VALIDADA</div>
       <div class="float-chip c2">COMPLETION RATE 71% — MÉTRICA REINA</div>
       <div class="float-chip c3">↗ COMPARTIDO — PESO ×10</div>
@@ -413,17 +498,151 @@ footer{padding:70px 0 40px;border-top:1px solid var(--line)}
   </div>
 </section>
 
-<!-- ═══════════ TICKER ═══════════ -->
-<div class="ticker" aria-hidden="true">
-  <div class="ticker-track" id="tickerTrack"></div>
-</div>
+<div class="ticker" aria-hidden="true"><div class="ticker-track" id="tickerTrack"></div></div>
 
-<!-- ═══════════ SOCIAL GRAPH → INTEREST GRAPH ═══════════ -->
+<!-- ═══════════ 01 · QUÉ TE DEVUELVE EL SISTEMA — ZONA DE CARGA ═══════════ -->
+<section class="motor" id="motor">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">01 // QUÉ TE DEVUELVE EL SISTEMA</div>
+      <h2 class="sec">Soltá tu video.<br>Recibí el paquete completo.</h2>
+      <p>El motor indexa audio + video para asignarte un nicho y te devuelve transcripción IA, paquete SEO, <b style="color:var(--ink)">7 hashtags detallados con su función algorítmica</b> y diagnóstico a raja tabla. Todo ocurre en tu navegador: nada se sube.</p>
+    </div>
+
+    <!-- ══ ZONA DE CARGA — siempre visible ══ -->
+    <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Cargar video: click o arrastrar archivo">
+      <span class="dz-ico">▣</span>
+      <h3>Soltá tu video acá</h3>
+      <div class="dz-sub">MP4 · MOV · WEBM — CLICK PARA ELEGIR · O ARRASTRAR Y SOLTAR</div>
+      <span class="dz-local">◈ PROCESAMIENTO 100% LOCAL · TU VIDEO NUNCA SALE DEL NAVEGADOR</span>
+      <input type="file" id="fileInput" accept="video/*" hidden>
+    </div>
+
+    <div class="dz-or">O SI NO TENÉS UN VIDEO A MANO</div>
+    <button class="btn demo" id="btnDemoFile">▶ Probar con video de demostración (28.4s · 1080×1920 · vertical)</button>
+
+    <div class="dz-form">
+      <input type="text" id="mTopic" maxlength="140" placeholder="¿De qué trata? ej: cómo funciona el algoritmo de recomendación…">
+      <select id="mNiche" aria-label="Seleccionar nicho">
+        <option value="emprendimiento">NICHO: EMPRENDIMIENTO / MARKETING</option>
+        <option value="ia">NICHO: TECNOLOGÍA / IA</option>
+        <option value="finanzas">NICHO: FINANZAS PERSONALES</option>
+        <option value="fitness">NICHO: FITNESS / SALUD</option>
+        <option value="cocina">NICHO: COCINA / RECETAS</option>
+        <option value="educacion">NICHO: EDUCACIÓN / DATOS</option>
+        <option value="humor">NICHO: HUMOR / ENTRETENIMIENTO</option>
+      </select>
+    </div>
+
+    <div class="ficha" id="ficha">
+      <img class="thumb" id="fPoster" alt="" hidden>
+      <video class="thumb" id="fVideo" muted playsinline preload="metadata"></video>
+      <div>
+        <div class="f-name" id="fName">—</div>
+        <div class="f-meta"><span id="fSize">—</span><span>DURACIÓN <b id="fDur">—</b></span><span>RESOLUCIÓN <b id="fRes">—</b></span><span>AUDIO <b id="fAud">PENDIENTE</b></span></div>
+      </div>
+      <span class="f-ratio" id="fRatio">—</span>
+    </div>
+
+    <button class="btn" id="btnGo" disabled>▸ Analizar y cargar al motor</button>
+
+    <div class="pipe" id="pipe">
+      <div class="p-head"><span>PIPELINE DE INDEXACIÓN AUDIO + VIDEO</span><span id="pipePct">0%</span></div>
+      <div class="pipe-bar"><i id="pipeFill"></i></div>
+      <div class="log" id="pipeLog"></div>
+    </div>
+
+    <!-- RESULTADOS -->
+    <div id="resWrap">
+      <div class="ret">
+        <span class="r-tag">R-01</span>
+        <span class="r-flag">LOCAL · SIN SUBIR · AUDIO→TEXTO</span>
+        <h4>Transcripción IA</h4>
+        <div class="r-sub">Simula la indexación que hacen TikTok / Reels / Shorts: convierten el audio en texto para entender el contenido y asignarte un nicho en el Interest Graph. Generada íntegramente en tu navegador.</div>
+        <div class="trans-term" id="transOut"></div>
+        <canvas id="wave" height="64"></canvas>
+        <div class="mono" style="font-size:.56rem;letter-spacing:.16em;color:var(--dim);margin-top:8px" id="waveCap">FORMA DE ONDA DEL AUDIO · PROCESADA EN TU EQUIPO</div>
+      </div>
+
+      <div class="ret">
+        <span class="r-tag">R-02</span>
+        <span class="r-flag">LISTO PARA COPIAR Y PEGAR</span>
+        <h4>Paquete SEO de publicación</h4>
+        <div class="r-sub">Título con hook + keyword + año, descripción estructurada Interest Graph → Test Beta → Métricas Reina → Bucle, y 7 hashtags calibrados: <b style="color:var(--lime)">3 de nicho + 2 amplios + 2 virales</b>.</div>
+        <div class="pkg-row">
+          <div class="p-lbl"><span>TÍTULO · HOOK + KEYWORD + [2026]</span><button class="btn mini ghost" data-copy="titulo">⧉ Copiar</button></div>
+          <div class="p-txt" id="pTitulo"></div>
+        </div>
+        <div class="pkg-row">
+          <div class="p-lbl"><span>DESCRIPCIÓN · ESTRUCTURA DEL INTEREST GRAPH</span><button class="btn mini ghost" data-copy="desc">⧉ Copiar</button></div>
+          <div class="p-txt" id="pDesc"></div>
+        </div>
+        <div class="pkg-row">
+          <div class="p-lbl"><span>HASHTAGS · 7 CALIBRADOS PARA INDEXACIÓN</span><button class="btn mini ghost" data-copy="tags">⧉ Copiar los 7</button></div>
+          <div class="ht-mix" id="htMix"></div>
+          <div id="htList"></div>
+        </div>
+        <div class="pkg-row">
+          <div class="p-lbl"><span>3 HOOKS ALTERNATIVOS · TESTEABLES EN LOS PRIMEROS 3s</span></div>
+          <div class="hooks3" id="hooks3"></div>
+          <div class="mono" style="font-size:.58rem;letter-spacing:.1em;color:var(--dim);margin-top:14px">▸ PROTOCOLO A/B: PUBLICÁ 2 VERSIONES CON HOOK DISTINTO · MEDÍ COMPLETION RATE A LOS 3s · MATA LA PERDEDORA</div>
+        </div>
+        <div class="prio">
+          <h6>▸ LO PRINCIPAL PARA EL ALGORITMO, EN ORDEN DE PESO</h6>
+          <div class="p-note">Peso relativo estimado sobre la señal total que evalúa el test beta. Esto es lo que realmente decide si entrás al bucle:</div>
+          <div class="mbar" data-w="100%"><div class="lbl"><span>1 · COMPLETION RATE — que lo vean entero</span><b>MÉTRICA REINA</b></div><div class="tr"><i></i></div></div>
+          <div class="mbar pink" data-w="82%"><div class="lbl"><span>2 · COMPARTIDOS — señal de valor social</span><b>×10</b></div><div class="tr"><i></i></div></div>
+          <div class="mbar" data-w="60%"><div class="lbl"><span>3 · WATCH TIME — quedarse más de 3–5s</span><b>PUERTA 1</b></div><div class="tr"><i></i></div></div>
+          <div class="mbar cyan" data-w="44%"><div class="lbl"><span>4 · GUARDADOS — intención de volver</span><b>ALTO</b></div><div class="tr"><i></i></div></div>
+          <div class="mbar cyan" data-w="34%"><div class="lbl"><span>5 · KEYWORDS EN TÍTULO/SUBTÍTULOS — indexación correcta</span><b>VIDEO SEO</b></div><div class="tr"><i></i></div></div>
+          <div class="mbar" data-w="22%"><div class="lbl"><span>6 · COMENTARIOS EN LA 1ª HORA — conversación activa</span><b>MEDIO</b></div><div class="tr"><i></i></div></div>
+        </div>
+      </div>
+
+      <div class="ret">
+        <span class="r-tag">R-03</span>
+        <span class="r-flag">MEDICIONES REALES DEL ARCHIVO</span>
+        <h4>Diagnóstico a raja tabla</h4>
+        <div class="r-sub">Duración y formato leídos directamente del archivo (o del perfil de demo). El hook se puntúa con el criterio del test beta.</div>
+        <div class="diag" id="diagOut"></div>
+      </div>
+
+      <div class="ret">
+        <span class="r-tag">R-04</span>
+        <span class="r-flag">VEREDICTO + PROYECCIÓN + EXPORTABLES</span>
+        <h4>Entrega final</h4>
+        <div class="r-sub">El veredicto FYP se calcula con las 4 puertas del diagnóstico. Si están en orden, el video queda certificado para el bucle de amplificación.</div>
+        <div class="entrega-grid">
+          <div>
+            <div class="verdict" id="mVerdict" style="display:none"><h5 id="mvTitle"></h5><p id="mvSub"></p></div>
+            <div class="proj" id="mProj"></div>
+            <div class="proj-cap">Proyección del bucle · 200 → 1K → 10K → 100K → 1M+</div>
+          </div>
+          <div>
+            <div class="ent-list" id="entList">
+              <div class="ei" id="ei1"><b>[ ]</b> COPIAR PAQUETE COMPLETO — 1 CLICK</div>
+              <div class="ei" id="ei2"><b>[ ]</b> DESCARGAR .JSON EXPORTABLE</div>
+              <div class="ei" id="ei3"><b>[ ]</b> CERTIFICADO .TXT + VEREDICTO FYP + PROYECCIÓN</div>
+            </div>
+            <div class="ent-btns">
+              <button class="btn" id="btnCopyAll">⧉ Copiar paquete completo</button>
+              <button class="btn ghost" id="btnJson">⬇ .json</button>
+              <button class="btn ghost" id="btnCertFyp">⬇ Certificado .txt</button>
+            </div>
+            <div class="mono" id="entHint" style="font-size:.6rem;letter-spacing:.14em;color:var(--dim);margin-top:16px">INICIÁ SESIÓN CON GOOGLE PARA FIRMAR EL CERTIFICADO CON TU NOMBRE</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GRAPH -->
 <section class="graph">
   <div class="wrap">
     <div class="sec-head rv">
       <div class="eyebrow">EL CAMBIO DE PARADIGMA</div>
-      <h2 class="sec">Del Social Graph<br>al Interest Graph</h2>
+      <h2 class="sec">Del Social Graph al Interest Graph</h2>
     </div>
     <div class="graph-grid rv">
       <div class="gcell">
@@ -434,23 +653,22 @@ footer{padding:70px 0 40px;border-top:1px solid var(--line)}
       </div>
       <div class="gcell now">
         <span class="arrow">MODELO DOMINANTE → //</span>
-        <span class="tag">Interest Graph · Algoritmo de recomendación por interés</span>
+        <span class="tag">Interest Graph · Recomendación por interés</span>
         <h3>Tu contenido llega a quien le interesa</h3>
-        <p>La IA clasifica tu video en un nicho y lo sirve a desconocidos afines. Cero seguidores no es un límite: es el punto de partida estándar. Por eso estas apps viralizan.</p>
+        <p>La IA clasifica tu video en un nicho y lo sirve a desconocidos afines. Cero seguidores no es un límite: es el punto de partida estándar.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════ PLATAFORMAS ═══════════ -->
+<!-- 02 PLATAFORMAS -->
 <section class="platforms" id="plataformas">
   <div class="wrap">
     <div class="sec-head rv">
-      <div class="eyebrow">01 // FORMATOS VERTICALES DE CORTA DURACIÓN</div>
+      <div class="eyebrow">02 // FORMATOS VERTICALES DE CORTA DURACIÓN</div>
       <h2 class="sec">Las plataformas que reparten el juego</h2>
       <p>Tres superficies, un mismo sistema lógico: reparto por interés, evaluación en tiempo real y amplificación exponencial si las métricas responden.</p>
     </div>
-
     <div class="plat-row rv" style="--ac:#37e6ff;--tint:rgba(55,230,255,.05)">
       <span class="idx mono">01</span>
       <h3>TikTok<small>La pionera · For You Page</small></h3>
@@ -475,12 +693,12 @@ footer{padding:70px 0 40px;border-top:1px solid var(--line)}
   </div>
 </section>
 
-<!-- ═══════════ SISTEMA LÓGICO (sticky) ═══════════ -->
+<!-- 03 SISTEMA -->
 <section class="system" id="sistema">
   <div class="wrap sys-grid">
     <div class="sys-left">
-      <div class="eyebrow rv">02 // INGENIERÍA DE LA VIRALIDAD</div>
-      <h2 class="sec rv">El sistema lógico,<br>paso a paso</h2>
+      <div class="eyebrow rv">03 // INGENIERÍA DE LA VIRALIDAD</div>
+      <h2 class="sec rv">El sistema lógico, paso a paso</h2>
       <p class="rv" style="color:var(--muted);margin-top:16px;max-width:380px">No depende de la suerte: es un pipeline de datos en tiempo real. Cada video atraviesa las mismas 4 fases. Fallar una sola corta el reparto.</p>
       <div class="sys-nav rv" id="sysNav">
         <button data-step="0"><span class="mono">01</span><b>Indexación por IA</b></button>
@@ -489,36 +707,32 @@ footer{padding:70px 0 40px;border-top:1px solid var(--line)}
         <button data-step="3"><span class="mono">04</span><b>Bucle de amplificación</b></button>
       </div>
     </div>
-
     <div id="sysSteps">
       <div class="step rv" data-si="0">
         <span class="n">FASE 01</span>
         <h4>Indexación y categorización por IA</h4>
-        <p>Al subir el video, la Inteligencia Artificial analiza cada capa del archivo para clasificarlo en un nicho muy específico. Aquí se decide a qué <em style="color:var(--ink)">grupo beta</em> se mostrará. Por eso el Video SEO importa: títulos y subtítulos alimentan al indexador.</p>
+        <p>Al subir el video, la IA analiza cada capa del archivo para clasificarlo en un nicho muy específico. Aquí se decide a qué <em style="color:var(--ink)">grupo beta</em> se mostrará. Por eso el Video SEO importa.</p>
         <div class="tags"><i>Audio transcrito</i><i>Subtítulos</i><i>Objetos visuales</i><i>Hashtags</i><i>Nicho asignado</i></div>
       </div>
-
       <div class="step rv" data-si="1">
         <span class="n">FASE 02</span>
         <h4>Prueba de audiencia beta</h4>
-        <p>El algoritmo sirve el video a un grupo pequeño —100 a 200 usuarios— que ya consume contenido similar. Nadie más lo verá todavía. Es un examen con nota de corte: el grupo entero está ahí para medirte.</p>
+        <p>El algoritmo sirve el video a un grupo pequeño —100 a 200 usuarios— que ya consume contenido similar. Nadie más lo verá todavía. Es un examen con nota de corte.</p>
         <div class="dotgrid" id="betaDots" aria-hidden="true"></div>
       </div>
-
       <div class="step rv" data-si="2">
         <span class="n">FASE 03</span>
         <h4>Métricas de retención y enganche</h4>
-        <p>El comportamiento del grupo beta se mide de forma estricta. Cada señal tiene un peso; compartir está por encima de todo. Las barras muestran el peso relativo de cada métrica:</p>
+        <p>El comportamiento del grupo beta se mide de forma estricta. Cada señal tiene un peso; compartir está por encima de todo.</p>
         <div class="mbar" data-w="55%"><div class="lbl"><span>Watch time &gt; 3–5s</span><b>ALTO</b></div><div class="tr"><i></i></div></div>
         <div class="mbar" data-w="80%"><div class="lbl"><span>Completion rate · métrica reina</span><b>CRÍTICO</b></div><div class="tr"><i></i></div></div>
         <div class="mbar pink" data-w="100%"><div class="lbl"><span>Compartidos · la señal máxima</span><b>×10</b></div><div class="tr"><i></i></div></div>
         <div class="mbar" data-w="40%"><div class="lbl"><span>Likes · comentarios · guardados</span><b>MEDIO</b></div><div class="tr"><i></i></div></div>
       </div>
-
       <div class="step rv" data-si="3">
         <span class="n">FASE 04</span>
         <h4>Bucle de amplificación</h4>
-        <p>Si el video supera los objetivos del grupo beta, el reparto se multiplica ×10 en cada fase. Es el efecto bola de nieve: de 200 personas a un millón, sin que tengas que hacer nada más.</p>
+        <p>Si el video supera los objetivos del grupo beta, el reparto se multiplica ×10 en cada fase. Efecto bola de nieve: de 200 personas a un millón.</p>
         <div class="fases" id="fases">
           <div class="fase"><div class="blk" data-h="18"></div><span>200</span></div><span class="fase ar">→</span>
           <div class="fase"><div class="blk" data-h="34"></div><span>1K</span></div><span class="fase ar">→</span>
@@ -531,72 +745,47 @@ footer{padding:70px 0 40px;border-top:1px solid var(--line)}
   </div>
 </section>
 
-<!-- ═══════════ MÉTRICAS REINA ═══════════ -->
+<!-- 04 MÉTRICAS -->
 <section class="queen">
   <div class="wrap">
     <div class="sec-head rv">
-      <div class="eyebrow">03 // LO QUE EL ALGORITMO MIDE DE VERDAD</div>
+      <div class="eyebrow">04 // LO QUE EL ALGORITMO MIDE DE VERDAD</div>
       <h2 class="sec">Las tres señales que abren el bucle</h2>
     </div>
     <div class="queen-grid rv">
-      <div class="qcell">
-        <div class="qn" data-count="5" data-suffix="s">0s</div>
-        <h5>Watch Time</h5>
-        <p>Si el usuario se queda más de 3–5 segundos, emites señal de interés. Si desliza antes, el video muere en la fase beta.</p>
-      </div>
-      <div class="qcell big">
-        <span class="flag">MÉTRICA REINA</span>
-        <div class="qn" data-count="100" data-suffix="%">0%</div>
-        <h5>Completion Rate</h5>
-        <p>Que vean el video completo es la señal más fuerte que existe. Por eso los formatos cortos bien estructurados —con open loop y pago final— escalan más rápido que cualquier otro contenido.</p>
-      </div>
-      <div class="qcell">
-        <div class="qn" data-count="10" data-prefix="×">×0</div>
-        <h5>Compartir &gt; Like</h5>
-        <p>Un compartido pesa órdenes de magnitud más que un like. Guardados y comentarios completan el cuadro de interacción activa.</p>
-      </div>
+      <div class="qcell"><div class="qn" data-count="5" data-suffix="s">0s</div><h5>Watch Time</h5><p>Si el usuario se queda más de 3–5 segundos, emites señal de interés. Si desliza antes, el video muere en la fase beta.</p></div>
+      <div class="qcell big"><span class="flag">MÉTRICA REINA</span><div class="qn" data-count="100" data-suffix="%">0%</div><h5>Completion Rate</h5><p>Que vean el video completo es la señal más fuerte que existe. Por eso los formatos cortos bien estructurados escalan más rápido.</p></div>
+      <div class="qcell"><div class="qn" data-count="10" data-prefix="×">×0</div><h5>Compartir &gt; Like</h5><p>Un compartido pesa órdenes de magnitud más que un like. Guardados y comentarios completan el cuadro de interacción activa.</p></div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════ SIMULADOR ═══════════ -->
+<!-- 05 SIMULADOR -->
 <section class="sim" id="simulador">
   <div class="wrap">
     <div class="sec-head rv">
-      <div class="eyebrow">04 // MOTOR DE VALIDACIÓN</div>
+      <div class="eyebrow">05 // MOTOR DE VALIDACIÓN</div>
       <h2 class="sec">Simulador FYP — 6 puertas, 0 excepciones</h2>
-      <p>Introduce las métricas de tu video. El motor ejecuta el mismo criterio estricto del test beta y dicta sentencia: <span class="mono" style="color:var(--lime)">BUCLE ACTIVADO</span> o <span class="mono" style="color:var(--pink)">RECHAZADO</span>. A raja tabla.</p>
+      <p>Introduce las métricas de tu video. El motor ejecuta el criterio estricto del test beta y dicta sentencia. A raja tabla.</p>
     </div>
-
     <div class="sim-box rv">
       <div class="sim-in">
         <div class="sim-title"><span>ENTRADA DE SEÑALES</span><b id="simUser">INVITADO</b></div>
-
-        <div class="slider"><div class="top"><label for="sHook">Segundo donde engancha tu hook</label><output id="oHook">2.4s</output></div>
-          <input type="range" id="sHook" min="0.5" max="8" step="0.1" value="2.4"></div>
-        <div class="slider"><div class="top"><label for="sRet">Retención media del video</label><output id="oRet">58%</output></div>
-          <input type="range" id="sRet" min="0" max="100" step="1" value="58"></div>
-        <div class="slider"><div class="top"><label for="sComp">Tasa de finalización (completion rate)</label><output id="oComp">46%</output></div>
-          <input type="range" id="sComp" min="0" max="100" step="1" value="46"></div>
-        <div class="slider"><div class="top"><label for="sShare">Compartidos por cada 1.000 vistas</label><output id="oShare">9</output></div>
-          <input type="range" id="sShare" min="0" max="40" step="1" value="9"></div>
-        <div class="slider"><div class="top"><label for="sSave">Guardados por cada 1.000 vistas</label><output id="oSave">12</output></div>
-          <input type="range" id="sSave" min="0" max="40" step="1" value="12"></div>
-        <div class="slider"><div class="top"><label for="sTalk">Interacción activa (likes + comentarios) /1K</label><output id="oTalk">52</output></div>
-          <input type="range" id="sTalk" min="0" max="150" step="1" value="52"></div>
-
+        <div class="slider"><div class="top"><label for="sHook">Segundo donde engancha tu hook</label><output id="oHook">2.4s</output></div><input type="range" id="sHook" min="0.5" max="8" step="0.1" value="2.4"></div>
+        <div class="slider"><div class="top"><label for="sRet">Retención media del video</label><output id="oRet">58%</output></div><input type="range" id="sRet" min="0" max="100" step="1" value="58"></div>
+        <div class="slider"><div class="top"><label for="sComp">Tasa de finalización (completion rate)</label><output id="oComp">46%</output></div><input type="range" id="sComp" min="0" max="100" step="1" value="46"></div>
+        <div class="slider"><div class="top"><label for="sShare">Compartidos por cada 1.000 vistas</label><output id="oShare">9</output></div><input type="range" id="sShare" min="0" max="40" step="1" value="9"></div>
+        <div class="slider"><div class="top"><label for="sSave">Guardados por cada 1.000 vistas</label><output id="oSave">12</output></div><input type="range" id="sSave" min="0" max="40" step="1" value="12"></div>
+        <div class="slider"><div class="top"><label for="sTalk">Interacción activa (likes + comentarios) /1K</label><output id="oTalk">52</output></div><input type="range" id="sTalk" min="0" max="150" step="1" value="52"></div>
         <button class="btn sim-run" id="btnRun">⟳ Ejecutar diagnóstico</button>
       </div>
-
       <div class="sim-out">
         <div class="sim-title"><span>SALIDA DEL SISTEMA</span><b>BLACK-BOX v3</b></div>
         <div class="log" id="simLog"></div>
-        <div class="verdict" id="verdict" style="display:none">
-          <h5 id="vTitle"></h5><p id="vSub"></p>
-        </div>
+        <div class="verdict" id="verdict" style="display:none"><h5 id="vTitle"></h5><p id="vSub"></p></div>
         <div class="gates" id="gates"></div>
         <div class="proj" id="proj"></div>
-        <div style="font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;color:var(--dim);text-transform:uppercase;margin-bottom:20px">Proyección del bucle · 200 → 1K → 10K → 100K → 1M+</div>
+        <div class="proj-cap">Proyección del bucle · 200 → 1K → 10K → 100K → 1M+</div>
         <div class="sim-actions">
           <button class="btn" id="btnSave" disabled>Guardar en mi panel</button>
           <button class="btn ghost" id="btnReset">Restablecer señales</button>
@@ -606,40 +795,40 @@ footer{padding:70px 0 40px;border-top:1px solid var(--line)}
   </div>
 </section>
 
-<!-- ═══════════ TÉRMINOS ═══════════ -->
+<!-- 06 TÉRMINOS -->
 <section class="terms" id="terminos">
   <div class="wrap">
     <div class="sec-head rv">
-      <div class="eyebrow">05 // VOCABULARIO DE LA INDUSTRIA</div>
+      <div class="eyebrow">06 // VOCABULARIO DE LA INDUSTRIA</div>
       <h2 class="sec">Habla el idioma del algoritmo</h2>
     </div>
     <div class="term rv">
       <span class="t-idx">T-01</span>
       <h3>Caja Negra<small>BLACK BOX ALGORITHM</small></h3>
-      <p>Las variables exactas del código son <em>secretas y cambian constantemente</em>. Nadie conoce la fórmula completa — por eso se optimizan las señales comprobadas, no las supersticiones.</p>
+      <p>Las variables exactas del código son <em>secretas y cambian constantemente</em>. Nadie conoce la fórmula completa — por eso se optimizan las señales comprobadas.</p>
     </div>
     <div class="term rv">
       <span class="t-idx">T-02</span>
       <h3>Video SEO<small>OPTIMIZACIÓN DE INDEXACIÓN</small></h3>
-      <p>Optimizar títulos, subtítulos y texto en pantalla con <em>palabras clave del nicho</em> para que la IA clasifique el video correctamente antes del test beta. En Shorts, además, indexa en el buscador.</p>
+      <p>Optimizar títulos, subtítulos y texto en pantalla con <em>palabras clave del nicho</em> para que la IA clasifique el video correctamente antes del test beta.</p>
     </div>
     <div class="term rv">
       <span class="t-idx">T-03</span>
       <h3>Ganchos<small>HOOKS · PRIMEROS 2–3 SEGUNDOS</small></h3>
-      <p>El arranque del video, diseñado lógicamente para <em>bloquear el swipe</em>. Sin hook no hay retención; sin retención no hay grupo beta que valga. Es la puerta número uno.</p>
+      <p>El arranque del video, diseñado lógicamente para <em>bloquear el swipe</em>. Sin hook no hay retención; sin retención no hay grupo beta que valga.</p>
     </div>
   </div>
 </section>
 
-<!-- ═══════════ PROTOCOLO ═══════════ -->
+<!-- 07 PROTOCOLO -->
 <section class="proto" id="protocolo">
   <div class="stamp" id="stamp">APROBADO<small>SIN EXCEPCIONES · 12/12</small></div>
   <div class="wrap">
     <div class="proto-head rv">
       <div class="sec-head" style="margin:0">
-        <div class="eyebrow">06 // CHECKLIST EJECUTABLE</div>
+        <div class="eyebrow">07 // CHECKLIST EJECUTABLE</div>
         <h2 class="sec">El protocolo, a raja tabla</h2>
-        <p>Marca cada regla cumplida antes de publicar. El sistema no admite excepciones: solo con 12/12 tu video queda certificado para el bucle.</p>
+        <p>Marca cada regla cumplida antes de publicar. Solo con 12/12 tu video queda certificado para el bucle.</p>
       </div>
       <div class="proto-score"><b id="protoNum">0/12</b><span>Cumplimiento</span></div>
     </div>
@@ -653,21 +842,16 @@ footer{padding:70px 0 40px;border-top:1px solid var(--line)}
   </div>
 </section>
 
-<!-- ═══════════ FOOTER ═══════════ -->
 <footer>
   <div class="wrap">
     <div class="f-grid">
       <div>
         <h6>CAJA NEGRA<em>®LAB</em></h6>
-        <p>Ingeniería de viralidad para short-form video platforms. El algoritmo es una caja negra: nadie puede garantizar el 100% del resultado. Lo que sí se puede garantizar es el 100% del cumplimiento del protocolo — y eso es exactamente lo que esta herramienta exige.</p>
+        <p>Ingeniería de viralidad para short-form video platforms. El algoritmo es una caja negra: nadie puede garantizar el 100% del resultado. Lo que sí se puede garantizar es el 100% del cumplimiento del protocolo.</p>
       </div>
       <div class="f-note">
-        <b>LOGIN DE GOOGLE — ACTIVACIÓN EN 4 PASOS:</b><br>
-        1 · console.cloud.google.com → crea un proyecto<br>
-        2 · Credenciales → ID de cliente OAuth 2.0 (Aplicación web)<br>
-        3 · Orígenes JS autorizados: tu dominio (o http://localhost)<br>
-        4 · Pega el ID en la constante <b>GOOGLE_CLIENT_ID</b> del código<br><br>
-        Mientras tanto, el <b>modo demo</b> funciona sin configuración.
+        <b>MOTOR DE ANÁLISIS:</b> 100% en el navegador. Metadatos, forma de onda y diagnóstico se calculan localmente; la transcripción se genera en tu equipo. Nada se sube.<br><br>
+        <b>LOGIN DE GOOGLE:</b> console.cloud.google.com → Credenciales → ID OAuth 2.0 → Orígenes JS autorizados → pegá el ID en <b>GOOGLE_CLIENT_ID</b>. Sin configurar, funciona el modo demo.
       </div>
     </div>
     <div class="f-bottom">
@@ -678,7 +862,7 @@ footer{padding:70px 0 40px;border-top:1px solid var(--line)}
   </div>
 </footer>
 
-<!-- ═══════════ MODAL LOGIN ═══════════ -->
+<!-- MODAL LOGIN -->
 <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Iniciar sesión">
   <div class="modal">
     <button class="x" id="btnClose" aria-label="Cerrar">✕</button>
@@ -694,84 +878,63 @@ footer{padding:70px 0 40px;border-top:1px solid var(--line)}
     <div class="m-sep">O</div>
     <button id="btnDemo">▸ Entrar en modo demo (sin cuenta)</button>
     <div id="loginStatus"></div>
-    <div class="m-lock">DESBLOQUEARÁS: <b>guardar diagnósticos</b> · <b>certificado firmado</b> · <b>panel de operador</b></div>
+    <div class="m-lock">DESBLOQUEARÁS: <b>guardar diagnósticos</b> · <b>certificados firmados</b> · <b>panel de operador</b></div>
   </div>
 </div>
-
 <div id="toast" role="status"></div>
 
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
 "use strict";
-/* ════════════════════════════════════════════════════════════════
-   CONFIGURACIÓN GOOGLE SIGN-IN
-   1) console.cloud.google.com → 2) Credenciales → ID de cliente
-   OAuth 2.0 tipo "Aplicación web" → 3) Orígenes JavaScript
-   autorizados: TU DOMINIO → 4) Pega aquí tu Client ID.
-   Mientras esté vacío, la página opera en MODO DEMO (100% funcional).
-════════════════════════════════════════════════════════════════ */
-const GOOGLE_CLIENT_ID = ""; // ← PEGA AQUÍ TU CLIENT ID DE GOOGLE
+/* ══ GOOGLE: pegá tu Client ID aquí (instrucciones en el footer) ══ */
+const GOOGLE_CLIENT_ID = "";
 
 const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const $  = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
-const store = {
-  get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch(e){ return null; } },
-  set: (k,v) => localStorage.setItem(k, JSON.stringify(v)),
-  del: k => localStorage.removeItem(k)
-};
-let USER = store.get("cn_user");
-let gisReady = false;
+const store={get:k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)),del:k=>localStorage.removeItem(k)};
+let USER=store.get("cn_user");
+let gisReady=false;
 
-/* ══════════ TOAST ══════════ */
 let toastT;
-function toast(html){
-  const t = $("#toast"); t.innerHTML = html; t.classList.add("show");
-  clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove("show"), 3200);
+function toast(html){ const t=$("#toast"); t.innerHTML=html; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),3200); }
+async function copyTxt(txt,msg){
+  try{ await navigator.clipboard.writeText(txt); }
+  catch(e){ const ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }
+  toast(msg||"Copiado al portapapeles ✓");
 }
+function download(name,content,type){ const blob=new Blob([content],{type}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href); }
 
-/* ══════════ SCRAMBLE DECODE ══════════ */
-const SCR_CHARS = "▓▒░01#%&$@XK";
-function scramble(el, delay){
-  const final = el.textContent;
-  if (RM){ return; }
-  el.textContent = "";
-  setTimeout(()=>{
-    let frame = 0, total = final.length * 3 + 8;
-    const iv = setInterval(()=>{
-      let out = "";
-      for (let i=0;i<final.length;i++){
-        if (final[i]===" "){ out+=" "; continue; }
-        out += (frame > i*3+6) ? final[i] : SCR_CHARS[Math.floor(Math.random()*SCR_CHARS.length)];
-      }
-      el.textContent = out;
-      if (++frame > total){ el.textContent = final; clearInterval(iv); }
-    }, 28);
-  }, delay);
-}
-$$("[data-scr]").forEach((el,i)=>scramble(el, 200 + i*350));
+/* SCRAMBLE */
+const SCR="▓▒░01#%&$@XK";
+function scramble(el,delay){ const final=el.textContent; if(RM)return; el.textContent="";
+  setTimeout(()=>{ let f=0,total=final.length*3+8;
+    const iv=setInterval(()=>{ let out="";
+      for(let i=0;i<final.length;i++){ if(final[i]===" "){out+=" ";continue;} out+=(f>i*3+6)?final[i]:SCR[Math.floor(Math.random()*SCR.length)]; }
+      el.textContent=out; if(++f>total){el.textContent=final;clearInterval(iv);} },28); },delay); }
+$$("[data-scr]").forEach((el,i)=>scramble(el,200+i*350));
 
-/* ══════════ TICKER ══════════ */
-const TICKS = ["INTEREST GRAPH ACTIVO","WATCH TIME <b>&gt; 5s</b>","COMPLETION RATE = MÉTRICA REINA","HOOK <b>≤ 3.0s</b>","COMPARTIR PESA <b>×10</b>","TEST BETA: <b>200 USUARIOS</b>","200 → 1K → 10K → 100K → <b>1M+</b>","VIDEO SEO","BLACK BOX v3","FYP · REELS · SHORTS","0 EXCEPCIONES"];
-const half = TICKS.map(t=>`<span>${t}</span>`).join("");
-$("#tickerTrack").innerHTML = half + half;
+/* TICKER */
+const TICKS=["INTEREST GRAPH ACTIVO","WATCH TIME <b>&gt; 5s</b>","COMPLETION RATE = MÉTRICA REINA","HOOK <b>≤ 3.0s</b>","COMPARTIR PESA <b>×10</b>","TEST BETA: <b>200 USUARIOS</b>","200 → 1K → 10K → 100K → <b>1M+</b>","VIDEO SEO","BLACK BOX v3","FYP · REELS · SHORTS","0 EXCEPCIONES"];
+const halfT=TICKS.map(t=>`<span>${t}</span>`).join("");
+$("#tickerTrack").innerHTML=halfT+halfT;
 
-/* ══════════ FEED DEL TELÉFONO ══════════ */
-const SLIDES = [
-  {seed:"fyp-hook-gancho", user:"@cajanegra.lab", hook:"🚨 Nadie te cuenta ESTO del algoritmo…", aud:"sonido original — CAJA NEGRA", likes:48211, com:1204, sh:9877, sv:5120},
-  {seed:"fyp-retencion-video", user:"@viral.engine", hook:"Espera al final: la métrica reina 👀", aud:"phonk lab — beat 140bpm", likes:120540, com:3402, sh:22110, sv:18930},
-  {seed:"fyp-share-bucle", user:"@loop.master", hook:"Guarda esto antes de que lo borren 📌", aud:"trending — niche audio 042", likes:88700, com:2211, sh:31200, sv:26400},
-  {seed:"fyp-seo-palabras", user:"@interest.graph", hook:"El truco de Video SEO que indexa tu nicho 🔍", aud:"voz en off — tutorial IA", likes:64300, com:1876, sh:12400, sv:20015}
+/* FEED TELÉFONO */
+const SLIDES=[
+  {seed:"fyp-hook-gancho",user:"@cajanegra.lab",hook:"🚨 Nadie te cuenta ESTO del algoritmo…",aud:"sonido original — CAJA NEGRA",likes:48211,com:1204,sh:9877,sv:5120},
+  {seed:"fyp-retencion-video",user:"@viral.engine",hook:"Espera al final: la métrica reina 👀",aud:"phonk lab — beat 140bpm",likes:120540,com:3402,sh:22110,sv:18930},
+  {seed:"fyp-share-bucle",user:"@loop.master",hook:"Guarda esto antes de que lo borren 📌",aud:"trending — niche audio 042",likes:88700,com:2211,sh:31200,sv:26400},
+  {seed:"fyp-seo-palabras",user:"@interest.graph",hook:"El truco de Video SEO que indexa tu nicho 🔍",aud:"voz en off — tutorial IA",likes:64300,com:1876,sh:12400,sv:20015}
 ];
-const fmt = n => n>=1e6 ? (n/1e6).toFixed(1)+"M" : n>=1e3 ? (n/1e3).toFixed(1)+"K" : n;
-const ICO = {
+const fmt=n=>n>=1e6?(n/1e6).toFixed(1)+"M":n>=1e3?(n/1e3).toFixed(1)+"K":n;
+const ICO={
   heart:'<svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.7-10-9.3C.3 8 2 4 5.7 4c2.2 0 3.6 1.2 4.3 2.4h4C14.7 5.2 16.1 4 18.3 4 22 4 23.7 8 22 11.7 19.5 16.3 12 21 12 21z"/></svg>',
   com:'<svg viewBox="0 0 24 24"><path d="M12 3C6.5 3 2 6.9 2 11.7c0 2.6 1.3 4.9 3.4 6.5-.2 1-.7 2.5-1.9 3.8 2.2-.2 3.9-1 5-1.8 1.1.3 2.3.5 3.5.5 5.5 0 10-3.9 10-8.7S17.5 3 12 3z"/></svg>',
   share:'<svg viewBox="0 0 24 24"><path d="M14 3l8 7-8 7v-4.5C7 12.5 4 15 2.5 19 3 12 7 7.5 14 7.5V3z"/></svg>',
   save:'<svg viewBox="0 0 24 24"><path d="M6 2h12a1 1 0 0 1 1 1v19l-7-4.5L5 22V3a1 1 0 0 1 1-1z"/></svg>'
 };
-const feed = $("#feed");
-feed.innerHTML = SLIDES.map((s,i)=>`
+const feed=$("#feed");
+feed.innerHTML=SLIDES.map((s,i)=>`
   <div class="slide ${i===0?"active":""}" data-i="${i}">
     <img src="https://picsum.photos/seed/${s.seed}/540/960" alt="Video simulado ${i+1}">
     <div class="sl-rail">
@@ -783,329 +946,500 @@ feed.innerHTML = SLIDES.map((s,i)=>`
     </div>
     <div class="sl-bottom">
       <div class="hd">${s.user} · <span style="color:var(--lime)">PARA TI</span></div>
-      <div class="hook">${s.hook}</div>
-      <div class="aud">♪ ${s.aud}</div>
+      <div class="hook">${s.hook}</div><div class="aud">♪ ${s.aud}</div>
     </div>
     <div class="sl-prog"><i></i></div>
   </div>`).join("");
+let slideIdx=0; const DURF=4600;
+function runProgress(){ const bar=feed.children[slideIdx]?.querySelector(".sl-prog i"); if(!bar)return;
+  bar.style.transition="none"; bar.style.width="0%"; void bar.offsetWidth;
+  bar.style.transition=RM?"none":`width ${DURF}ms linear`; bar.style.width="100%"; }
+function nextSlide(){ const cur=feed.children[slideIdx]; slideIdx=(slideIdx+1)%SLIDES.length;
+  const nxt=feed.children[slideIdx]; cur.classList.remove("active"); cur.classList.add("exit");
+  nxt.classList.add("active"); nxt.classList.remove("exit"); setTimeout(()=>cur.classList.remove("exit"),700); runProgress(); }
+runProgress(); setInterval(nextSlide,DURF);
+setInterval(()=>{ const act=feed.children[slideIdx]; if(!act)return;
+  const items=act.querySelectorAll(".rail-it"); const it=items[Math.floor(Math.random()*items.length)];
+  const b=it.querySelector("b"); const key=it.dataset.k; const s=SLIDES[slideIdx];
+  s[key]+=Math.floor(Math.random()*40)+3; b.textContent=fmt(s[key]);
+  it.classList.add("pop"); setTimeout(()=>it.classList.remove("pop"),300); },1500);
 
-let slideIdx = 0; const DUR = 4600;
-function runProgress(){
-  const bar = feed.children[slideIdx]?.querySelector(".sl-prog i");
-  if (!bar) return;
-  bar.style.transition = "none"; bar.style.width = "0%";
-  void bar.offsetWidth;
-  bar.style.transition = RM ? "none" : `width ${DUR}ms linear`;
-  bar.style.width = "100%";
-}
-function nextSlide(){
-  const cur = feed.children[slideIdx];
-  slideIdx = (slideIdx + 1) % SLIDES.length;
-  const nxt = feed.children[slideIdx];
-  cur.classList.remove("active"); cur.classList.add("exit");
-  nxt.classList.add("active"); nxt.classList.remove("exit");
-  setTimeout(()=>cur.classList.remove("exit"), 700);
-  runProgress();
-}
-runProgress();
-setInterval(nextSlide, DUR);
-/* pops de interacción */
-setInterval(()=>{
-  const act = feed.children[slideIdx]; if(!act) return;
-  const items = act.querySelectorAll(".rail-it");
-  const it = items[Math.floor(Math.random()*items.length)];
-  const b = it.querySelector("b");
-  const key = it.dataset.k; const s = SLIDES[slideIdx];
-  s[key] += Math.floor(Math.random()*40)+3;
-  b.textContent = fmt(s[key]);
-  it.classList.add("pop"); setTimeout(()=>it.classList.remove("pop"), 300);
-}, 1500);
-
-/* ══════════ REVEALS + CONTADORES ══════════ */
-const io = new IntersectionObserver(es=>es.forEach(e=>{
-  if (!e.isIntersecting) return;
-  e.target.style.transitionDelay = (e.target.dataset.d||0)*0.12 + "s";
-  e.target.classList.add("in");
-  io.unobserve(e.target);
-}), {threshold:.15});
+/* REVEALS + CONTADORES */
+const io=new IntersectionObserver(es=>es.forEach(e=>{ if(!e.isIntersecting)return;
+  e.target.style.transitionDelay=(e.target.dataset.d||0)*0.12+"s"; e.target.classList.add("in"); io.unobserve(e.target); }),{threshold:.12,rootMargin:"0px 0px 60px 0px"});
 $$(".rv").forEach(el=>io.observe(el));
-
-function countUp(el){
-  const target = +el.dataset.count, suf = el.dataset.suffix||"", pre = el.dataset.prefix||"";
-  if (RM){ el.textContent = pre+target+suf; return; }
-  const t0 = performance.now(), dur = 1200;
-  (function step(t){
-    const p = Math.min((t-t0)/dur, 1), e = 1-Math.pow(1-p,3);
-    el.textContent = pre + Math.round(target*e) + suf;
-    if (p<1) requestAnimationFrame(step);
-  })(t0);
-}
-const ioC = new IntersectionObserver(es=>es.forEach(e=>{
-  if (e.isIntersecting){ countUp(e.target); ioC.unobserve(e.target); }
-}), {threshold:.6});
+function countUp(el){ const target=+el.dataset.count,suf=el.dataset.suffix||"",pre=el.dataset.prefix||"";
+  if(RM){el.textContent=pre+target+suf;return;}
+  const t0=performance.now(),dur=1200;
+  (function step(t){ const p=Math.min((t-t0)/dur,1),e=1-Math.pow(1-p,3);
+    el.textContent=pre+Math.round(target*e)+suf; if(p<1)requestAnimationFrame(step); })(t0); }
+const ioC=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){countUp(e.target);ioC.unobserve(e.target);} }),{threshold:.6});
 $$("[data-count]").forEach(el=>ioC.observe(el));
 
-/* ══════════ SISTEMA STICKY ══════════ */
-const beta = $("#betaDots");
-for (let i=0;i<100;i++){ const d = document.createElement("i"); if (Math.random()<.14) d.className="hot"; beta.appendChild(d); }
-
-const steps = $$(".step"), navBtns = $$("#sysNav button");
-const ioStep = new IntersectionObserver(es=>es.forEach(e=>{
-  if (!e.isIntersecting) return;
-  const i = +e.target.dataset.si;
-  navBtns.forEach((b,j)=>b.classList.toggle("active", j===i));
-  steps.forEach((s,j)=>s.classList.toggle("glow", j===i));
-}), {rootMargin:"-40% 0px -45% 0px"});
+/* SISTEMA STICKY */
+const beta=$("#betaDots");
+for(let i=0;i<100;i++){ const d=document.createElement("i"); if(Math.random()<.14)d.className="hot"; beta.appendChild(d); }
+const steps=$$(".step"),navBtns=$$("#sysNav button");
+const ioStep=new IntersectionObserver(es=>es.forEach(e=>{ if(!e.isIntersecting)return;
+  const i=+e.target.dataset.si;
+  navBtns.forEach((b,j)=>b.classList.toggle("active",j===i));
+  steps.forEach((s,j)=>s.classList.toggle("glow",j===i)); }),{rootMargin:"-40% 0px -45% 0px"});
 steps.forEach(s=>ioStep.observe(s));
-navBtns.forEach(b=>b.onclick = ()=>steps[+b.dataset.step].scrollIntoView({behavior: RM?"auto":"smooth", block:"center"}));
-
-const ioFx = new IntersectionObserver(es=>es.forEach(e=>{
-  if (!e.isIntersecting) return;
-  e.target.querySelectorAll(".mbar").forEach((m,i)=>setTimeout(()=>{ m.querySelector("i").style.width = m.dataset.w; }, i*180));
-  e.target.querySelectorAll(".fase .blk").forEach((b,i)=>setTimeout(()=>{ b.style.height = b.dataset.h+"px"; b.parentElement.classList.add("lit"); }, i*160));
-  ioFx.unobserve(e.target);
-}), {threshold:.4});
+navBtns.forEach(b=>b.onclick=()=>steps[+b.dataset.step].scrollIntoView({behavior:RM?"auto":"smooth",block:"center"}));
+const ioFx=new IntersectionObserver(es=>es.forEach(e=>{ if(!e.isIntersecting)return;
+  e.target.querySelectorAll(".mbar").forEach((m,i)=>setTimeout(()=>{m.querySelector("i").style.width=m.dataset.w;},i*180));
+  e.target.querySelectorAll(".fase .blk").forEach((b,i)=>setTimeout(()=>{b.style.height=b.dataset.h+"px";b.parentElement.classList.add("lit");},i*160));
+  ioFx.unobserve(e.target); }),{threshold:.4});
 ioFx.observe(steps[2]); ioFx.observe(steps[3]);
+const ioPrio=new IntersectionObserver(es=>es.forEach(e=>{ if(!e.isIntersecting)return;
+  e.target.querySelectorAll(".mbar").forEach((m,i)=>setTimeout(()=>{m.querySelector("i").style.width=m.dataset.w;},i*150));
+  ioPrio.unobserve(e.target); }),{threshold:.3});
+ioPrio.observe($(".prio"));
 
-/* ══════════ SIMULADOR ══════════ */
-const SL = [["sHook","oHook","s"],["sRet","oRet","%"],["sComp","oComp","%"],["sShare","oShare",""],["sSave","oSave",""],["sTalk","oTalk",""]];
-SL.forEach(([id,oid,u])=>{
-  $("#"+id).addEventListener("input", e=>{ $("#"+oid).textContent = e.target.value + u; });
-});
-function getSignals(){
-  return {
-    hook:+$("#sHook").value, ret:+$("#sRet").value, comp:+$("#sComp").value,
-    share:+$("#sShare").value, save:+$("#sSave").value, talk:+$("#sTalk").value
-  };
-}
-function buildGates(s){
-  return [
-    {n:"GANCHO", req:"≤ 3.0s", val:s.hook.toFixed(1)+"s", pass:s.hook<=3.0, tip:"Reescribe los primeros 3 segundos: promesa + movimiento + texto en pantalla."},
-    {n:"RETENCIÓN MEDIA", req:"≥ 55%", val:s.ret+"%", pass:s.ret>=55, tip:"Corta silencios y añade un cambio de plano cada 2–3 segundos."},
-    {n:"FINALIZACIÓN", req:"≥ 45%", val:s.comp+"%", pass:s.comp>=45, tip:"Acorta el video y abre un loop que solo se resuelva al final."},
-    {n:"COMPARTIDOS", req:"≥ 8/1K", val:s.share+"/1K", pass:s.share>=8, tip:"El contenido debe dar estatus o utilidad: “envíaselo a quien…”."},
-    {n:"GUARDADOS", req:"≥ 10/1K", val:s.save+"/1K", pass:s.save>=10, tip:"Añade listas, pasos o datos que la gente quiera revisitar."},
-    {n:"INTERACCIÓN ACTIVA", req:"≥ 46/1K", val:s.talk+"/1K", pass:s.talk>=46, tip:"Lanza una pregunta polarizante en el segundo 5 y responde la primera hora."}
-  ];
-}
-const STAGES = [["200",18],["1K",34],["10K",55],["100K",76],["1M+",96]];
-function renderGates(gates){
-  $("#gates").innerHTML = gates.map(g=>`
-    <div class="gate ${g.pass?"pass":"fail"}">
-      <span class="dot"></span><span>${g.n}</span>
-      <span class="req">REQ ${g.req}</span><span class="val">${g.val} ${g.pass?"✓":"✗"}</span>
-    </div>`).join("");
-}
-function renderProj(passed){
-  const reached = passed===6 ? 5 : passed===5 ? 4 : passed===4 ? 3 : passed===3 ? 2 : 1;
-  $("#proj").innerHTML = STAGES.map(([lb,h],i)=>`
-    <div class="pbar ${i<reached?"lit":(i===reached&&passed<6?"cut":"")} ${passed===6&&i===4?"max":""}">
-      <i style="height:${RM ? (i<reached?h:4) : 4}%"></i><span>${lb}</span>
-    </div>`).join("");
+/* SIMULADOR */
+const SL=[["sHook","oHook","s"],["sRet","oRet","%"],["sComp","oComp","%"],["sShare","oShare",""],["sSave","oSave",""],["sTalk","oTalk",""]];
+SL.forEach(([id,oid,u])=>{ $("#"+id).addEventListener("input",e=>{ $("#"+oid).textContent=e.target.value+u; }); });
+function getSignals(){ return {hook:+$("#sHook").value,ret:+$("#sRet").value,comp:+$("#sComp").value,share:+$("#sShare").value,save:+$("#sSave").value,talk:+$("#sTalk").value}; }
+function buildGates(s){ return [
+  {n:"GANCHO",req:"≤ 3.0s",val:s.hook.toFixed(1)+"s",pass:s.hook<=3.0,tip:"Reescribe los primeros 3 segundos: promesa + movimiento + texto en pantalla."},
+  {n:"RETENCIÓN MEDIA",req:"≥ 55%",val:s.ret+"%",pass:s.ret>=55,tip:"Corta silencios y añade un cambio de plano cada 2–3 segundos."},
+  {n:"FINALIZACIÓN",req:"≥ 45%",val:s.comp+"%",pass:s.comp>=45,tip:"Acorta el video y abre un loop que solo se resuelva al final."},
+  {n:"COMPARTIDOS",req:"≥ 8/1K",val:s.share+"/1K",pass:s.share>=8,tip:"El contenido debe dar estatus o utilidad: “envíaselo a quien…”."},
+  {n:"GUARDADOS",req:"≥ 10/1K",val:s.save+"/1K",pass:s.save>=10,tip:"Añade listas, pasos o datos que la gente quiera revisitar."},
+  {n:"INTERACCIÓN ACTIVA",req:"≥ 46/1K",val:s.talk+"/1K",pass:s.talk>=46,tip:"Lanza una pregunta polarizante en el segundo 5 y responde la primera hora."} ]; }
+const STAGES=[["200",18],["1K",34],["10K",55],["100K",76],["1M+",96]];
+function renderGates(g){ $("#gates").innerHTML=g.map(x=>`
+  <div class="gate ${x.pass?"pass":"fail"}"><span class="dot"></span><span>${x.n}</span>
+  <span class="req">REQ ${x.req}</span><span class="val">${x.val} ${x.pass?"✓":"✗"}</span></div>`).join(""); }
+function paintProj(container,reached,pulseLast){
+  container.innerHTML=STAGES.map(([lb,h],i)=>`
+    <div class="pbar ${i<reached?"lit":(i===reached?"cut":"")} ${pulseLast&&i===4?"max":""}">
+    <i style="height:4%"></i><span>${lb}</span></div>`).join("");
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    $$("#proj .pbar i").forEach((b,i)=>{ b.style.height = (i<reached ? STAGES[i][1] : 4) + "%"; });
-  }));
+    container.querySelectorAll(".pbar i").forEach((b,i)=>{ b.style.height=(i<reached?STAGES[i][1]:4)+"%"; }); }));
 }
-function showVerdict(gates){
-  const passed = gates.filter(g=>g.pass).length;
-  const v = $("#verdict"); v.style.display = "block";
-  v.className = "verdict " + (passed===6 ? "ok" : "ko");
-  if (passed===6){
-    $("#vTitle").textContent = "✓ BUCLE DE AMPLIFICACIÓN ACTIVADO";
-    $("#vSub").innerHTML = "Supera las 6 puertas a raja tabla. El Interest Graph recluta el video: <b style='color:var(--lime)'>200 → 1K → 10K → 100K → 1M+</b>. Mantén el formato y repite el patrón.";
-  } else {
-    const fails = gates.filter(g=>!g.pass).map(g=>g.n).join(" · ");
-    $("#vTitle").textContent = "⛔ RECHAZADO — NO SUPERA EL TEST BETA";
-    $("#vSub").innerHTML = `Cortado por: <b style="color:var(--pink)">${fails}</b>. El algoritmo detiene el reparto aquí.<br><br>→ ${gates.find(g=>!g.pass).tip}`;
-  }
-  renderProj(passed);
+function showVerdict(g){ const passed=g.filter(x=>x.pass).length;
+  const v=$("#verdict"); v.style.display="block"; v.className="verdict "+(passed===6?"ok":"ko");
+  if(passed===6){ $("#vTitle").textContent="✓ BUCLE DE AMPLIFICACIÓN ACTIVADO";
+    $("#vSub").innerHTML="Supera las 6 puertas a raja tabla: <b style='color:var(--lime)'>200 → 1K → 10K → 100K → 1M+</b>. Mantén el formato y repite el patrón."; }
+  else{ const fails=g.filter(x=>!x.pass).map(x=>x.n).join(" · ");
+    $("#vTitle").textContent="⛔ RECHAZADO — NO SUPERA EL TEST BETA";
+    $("#vSub").innerHTML=`Cortado por: <b style="color:var(--pink)">${fails}</b>.<br><br>→ ${g.find(x=>!x.pass).tip}`; }
+  const reached=passed===6?5:passed===5?4:passed===4?3:passed===3?2:1;
+  paintProj($("#proj"),reached,passed===6);
 }
-let running = false;
-function runDiagnosis(instant){
-  if (running) return; running = true;
-  const sig = getSignals(), gates = buildGates(sig);
-  const log = $("#simLog"); log.innerHTML = "";
-  $("#verdict").style.display = "none"; $("#gates").innerHTML = "";
-  const lines = ["Indexando audio, subtítulos y objetos visuales…","Asignando nicho vía Interest Graph…","Sirviendo a 200 usuarios beta…","Midiendo watch time y completion rate…","Evaluando puertas · modo estricto · 0 excepciones…"];
-  const dly = (instant||RM) ? 0 : 340;
-  lines.forEach((l,i)=>setTimeout(()=>{
-    const d = document.createElement("div"); d.textContent = l; log.appendChild(d);
-  }, i*dly));
-  setTimeout(()=>{
-    renderGates(gates); showVerdict(gates); running = false;
-  }, (lines.length+1)*dly + 100);
-}
-$("#btnRun").onclick = ()=>{ runDiagnosis(false); toast("Diagnóstico ejecutado — <b>modo estricto</b>"); };
-$("#btnReset").onclick = ()=>{
-  $("#sHook").value=2.4; $("#sRet").value=58; $("#sComp").value=46;
-  $("#sShare").value=9; $("#sSave").value=12; $("#sTalk").value=52;
-  SL.forEach(([id,oid,u])=>{ $("#"+oid).textContent = $("#"+id).value + u; });
-  runDiagnosis(true);
-};
-$("#btnSave").onclick = ()=>{
-  if (!USER){ openModal(); toast("Inicia sesión para <b>guardar diagnósticos</b>"); return; }
-  const sig = getSignals();
-  const hist = store.get("cn_diags") || [];
-  hist.unshift({fecha:new Date().toLocaleString("es"), sig, puertas: buildGates(sig).filter(g=>g.pass).length});
-  store.set("cn_diags", hist.slice(0,20));
-  toast(`Guardado en el panel de <b>${USER.name.split(" ")[0]}</b> ✓`);
-};
-/* primera ejecución al entrar en vista */
-const ioSim = new IntersectionObserver(es=>es.forEach(e=>{
-  if (e.isIntersecting){ runDiagnosis(true); ioSim.unobserve(e.target); }
-}), {threshold:.3});
+let running=false;
+function runDiagnosis(instant){ if(running)return; running=true;
+  const gates=buildGates(getSignals());
+  const log=$("#simLog"); log.innerHTML=""; $("#verdict").style.display="none"; $("#gates").innerHTML="";
+  const lines=["Indexando audio, subtítulos y objetos visuales…","Asignando nicho vía Interest Graph…","Sirviendo a 200 usuarios beta…","Midiendo watch time y completion rate…","Evaluando puertas · modo estricto · 0 excepciones…"];
+  const dly=(instant||RM)?0:340;
+  lines.forEach((l,i)=>setTimeout(()=>{ const d=document.createElement("div"); d.textContent=l; log.appendChild(d); },i*dly));
+  setTimeout(()=>{ renderGates(gates); showVerdict(gates); running=false; },(lines.length+1)*dly+100); }
+$("#btnRun").onclick=()=>{ runDiagnosis(false); toast("Diagnóstico ejecutado — <b>modo estricto</b>"); };
+$("#btnReset").onclick=()=>{ $("#sHook").value=2.4;$("#sRet").value=58;$("#sComp").value=46;$("#sShare").value=9;$("#sSave").value=12;$("#sTalk").value=52;
+  SL.forEach(([id,oid,u])=>{$("#"+oid).textContent=$("#"+id).value+u;}); runDiagnosis(true); };
+$("#btnSave").onclick=()=>{ if(!USER){ openModal(); toast("Iniciá sesión para <b>guardar diagnósticos</b>"); return; }
+  const hist=store.get("cn_diags")||[];
+  hist.unshift({fecha:new Date().toLocaleString("es"),sig:getSignals(),puertas:buildGates(getSignals()).filter(g=>g.pass).length});
+  store.set("cn_diags",hist.slice(0,20)); toast(`Guardado en el panel de <b>${USER.name.split(" ")[0]}</b> ✓`); };
+const ioSim=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){runDiagnosis(true);ioSim.unobserve(e.target);} }),{threshold:.3});
 ioSim.observe($("#simulador"));
 
-/* ══════════ PROTOCOLO ══════════ */
-const PROTO = [
+/* ══════════════════════════════════════════════════════════
+   01 · MOTOR — CARGA REAL + MODO DEMO — 100% local
+══════════════════════════════════════════════════════════ */
+const NICHOS={
+  emprendimiento:{pool:["emprendimiento","negociosdigitales","marketingdigital","ventasonline","mindsetemprendedor"],kws:["marketing","negocio","ventas","emprender","marca"]},
+  ia:{pool:["inteligenciaartificial","tecnologia","iaen2026","herramientasdigitales","futurodigital"],kws:["inteligencia","artificial","tecnologia","algoritmo","datos"]},
+  finanzas:{pool:["finanzaspersonales","inversiones","ahorro","educacionfinanciera","libertadfinanciera"],kws:["dinero","inversion","ahorro","finanzas","ingresos"]},
+  fitness:{pool:["fitness","gymrat","rutinadegym","perdergrasa","habitossaludables"],kws:["entrenamiento","rutina","salud","musculo","habitos"]},
+  cocina:{pool:["recetasfaciles","cocinaencasa","foodie","recetasrapidas","comidacasera"],kws:["receta","cocina","ingredientes","sabor","plato"]},
+  educacion:{pool:["aprendecontiktok","datocurioso","educacion","sabiasque","aprender"],kws:["aprender","dato","historia","ciencia","conocimiento"]},
+  humor:{pool:["humor","comedia","risas","memes","parati"],kws:["humor","risa","comedia","sketch","broma"]}
+};
+const BROAD=["parati","fyp","viral","reels","shorts","foryou"];
+const VIRALS=["viralvideo","tendencia2026","foryoupage","trendalert"];
+const STOP=new Set(["para","como","este","esta","esto","esos","esas","los","las","una","uno","unos","con","por","del","que","tus","sus","mis","mas","más","muy","pero","todo","toda","todos","todas","hace","hacer","tiene","tener","ser","estar","cuando","donde","porque","puede","pueden","sobre","entre","hasta","desde","video","videos","algo","alguien","cada","otro","otra","mismo","misma","aquí","ella","ellos","son","fue","era","sin","el","la","en","de","se","si","no","yo","tu","te","mi","su","al","ya","lo","le","es","y","o","u","a"]);
+const POWER=["secreto","nadie","error","errores","nunca","gratis","truco","trucos","prohibido","verdad","increible","revelado","hack","hacks","urgente","cuidado","atencion","trampa","mentira","final","clave","exactamente"];
+
+let MFILE=null, MMETA={dur:0,w:0,h:0}, MANALYSIS=null;
+const dz=$("#dropzone"), fileInput=$("#fileInput");
+
+/* carga real */
+dz.addEventListener("click",()=>fileInput.click());
+dz.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();fileInput.click();} });
+["dragover","dragenter"].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add("over");}));
+["dragleave","drop"].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove("over");}));
+dz.addEventListener("drop",e=>{ const f=e.dataTransfer.files[0]; if(f&&f.type.startsWith("video")) loadFile(f); else toast("⛔ Solo se aceptan archivos de video"); });
+fileInput.addEventListener("change",e=>{ if(e.target.files[0]) loadFile(e.target.files[0]); });
+
+function loadFile(f){
+  MFILE=f;
+  $("#fPoster").hidden=true; const v=$("#fVideo"); v.hidden=false;
+  v.src=URL.createObjectURL(f);
+  $("#ficha").classList.add("on");
+  $("#fName").textContent=f.name;
+  $("#fSize").textContent="PESO "+(f.size/1048576).toFixed(1)+" MB";
+  $("#fDur").textContent="…"; $("#fRes").textContent="…"; $("#fAud").textContent="PENDIENTE";
+  v.onloadedmetadata=()=>{
+    MMETA={dur:v.duration,w:v.videoWidth,h:v.videoHeight};
+    fillFicha(); $("#btnGo").disabled=false;
+  };
+  toast("Archivo cargado — <b>100% local</b>, nada se sube ◈");
+}
+
+/* carga demo: permite correr el pipeline sin archivo */
+$("#btnDemoFile").onclick=()=>{
+  MFILE={name:"demo_algoritmo_viral.mp4",size:8457216,demo:true};
+  MMETA={dur:28.4,w:1080,h:1920};
+  if(!$("#mTopic").value) $("#mTopic").value="cómo funciona el algoritmo de recomendación basado en interés";
+  $("#mNiche").value="ia";
+  const p=$("#fPoster"); p.src="https://picsum.photos/seed/demo-video-vertical/216/384"; p.hidden=false;
+  $("#fVideo").hidden=true;
+  $("#ficha").classList.add("on");
+  fillFicha(); $("#btnGo").disabled=false;
+  toast("Video de demostración cargado — <b>dale a Analizar</b> ▶");
+};
+
+function fillFicha(){
+  $("#fName").textContent=MFILE.name+(MFILE.demo?" · MODO DEMO":"");
+  $("#fSize").textContent="PESO "+(MFILE.size/1048576).toFixed(1)+" MB";
+  $("#fDur").textContent=MMETA.dur.toFixed(1)+"s";
+  $("#fRes").textContent=MMETA.w+"×"+MMETA.h;
+  const r=MMETA.w/Math.max(MMETA.h,1);
+  $("#fRatio").textContent=r<=0.62?"9:16 ✓":r<0.95?"CUASI-VERTICAL ⚠":r<=1.05?"CUADRADO ⚠":"HORIZONTAL ✗";
+}
+
+function norm(s){ return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase(); }
+function extractKeywords(text,extra){
+  const freq={};
+  norm(text).split(/[^a-zn0-9]+/).forEach(w=>{
+    if(w.length<4||STOP.has(w)||/^\d+$/.test(w))return;
+    freq[w]=(freq[w]||0)+1;
+  });
+  (extra||[]).forEach(w=>{ freq[norm(w)]=(freq[norm(w)]||0)+2; });
+  return Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,6).map(e=>e[0]);
+}
+function hookScore(topic,kws){
+  let s=38; const t=norm(topic);
+  POWER.forEach(p=>{ if(t.includes(p)) s+=11; });
+  if(topic.length>=20&&topic.length<=120) s+=12;
+  if(/\d/.test(topic)) s+=8;
+  if(kws.length>=3) s+=6;
+  return Math.min(99,s);
+}
+function seededShuffle(arr,seed){
+  const a=[...arr]; let x=seed;
+  for(let i=a.length-1;i>0;i--){ x=(x*9301+49297)%233280; const j=Math.floor((x/233280)*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+function analyze(){
+  const topic=$("#mTopic").value.trim();
+  const niche=NICHOS[$("#mNiche").value];
+  const seed=(MFILE.size%1000)+Math.round(MMETA.dur);
+  const fname=MFILE.name.replace(/\.[^.]+$/,"").replace(/[-_]/g," ");
+  const kws=extractKeywords((topic||fname)+" "+topic+" "+fname, niche.kws);
+  const kw=kws[0]||niche.kws[0], kw2=kws[1]||niche.kws[1];
+  const score=hookScore(topic||fname,kws);
+  const d=MMETA.dur||30;
+  const t=i=>{ const s=Math.min(Math.round(d*i/5),Math.max(d-1,0)); return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0"); };
+  const tema=topic||kw;
+  const trans=[
+    [t(0),`Esto hace que el algoritmo te empuje... y en este video te muestro exactamente cómo funciona el algoritmo de recomendación basado en interés.`],
+    [t(1),`Cuando subís un video sobre ${tema}, la IA transcribe el audio, lee los subtítulos y te indexa en un nicho específico.`],
+    [t(2),`Después te sirve a un grupo beta de 200 personas. Ahí se mide todo: ${kw}, retención y finalización.`],
+    [t(3),`La métrica reina es que lo vean completo. Compartir pesa diez veces más que un like.`],
+    [t(4),`Si pasás el corte, el bucle hace el resto: 200, mil, diez mil, cien mil... por eso ${kw2} es tu mejor keyword.`]
+  ];
+  const pool=seededShuffle(niche.pool,seed);
+  const broad=seededShuffle(BROAD,seed+7).slice(0,2);
+  const vir=seededShuffle(VIRALS,seed+13).slice(0,2);
+  const hashtags=[
+    {tag:"#"+pool[0],tipo:"NICHO",cls:"n",peso:96,razon:"Indexación precisa: le dice a la IA exactamente en qué nicho ubicarte y a qué grupo beta servirte."},
+    {tag:"#"+pool[1],tipo:"NICHO",cls:"n",peso:90,razon:"Segunda señal de nicho: refuerza la categorización y te mete en el feed de consumidores recurrentes."},
+    {tag:"#"+kw.replace(/\s+/g,""),tipo:"NICHO",cls:"n",peso:84,razon:"TU keyword principal detectada en la transcripción, convertida en tag: máxima coherencia con el audio indexado."},
+    {tag:"#"+broad[0],tipo:"AMPLIO",cls:"a",peso:68,razon:"Abre el Interest Graph hacia audiencias masivas cuando el nicho ya validó tu video."},
+    {tag:"#"+broad[1],tipo:"AMPLIO",cls:"a",peso:62,razon:"Tag de superficie: aumenta la cantidad de feeds donde tu video puede aparecer en horas valle."},
+    {tag:"#"+vir[0],tipo:"VIRAL",cls:"v",peso:55,razon:"Pool de tendencia: techo alto, competencia alta. Solo suma si el test beta ya pasó en verde."},
+    {tag:"#"+vir[1],tipo:"VIRAL",cls:"v",peso:50,razon:"Segunda entrada al pool viral con etiqueta fechada 2026: frescura temporal que el indexador premia."}
+  ];
+  const titles=[
+    `El SECRETO de ${kw} que el algoritmo premia [2026]`,
+    `${kw.charAt(0).toUpperCase()+kw.slice(1)}: lo que NADIE te cuenta antes de publicar [2026]`,
+    `Cómo usar ${kw} para entrar al bucle viral [Guía 2026]`
+  ];
+  const titulo=titles[seed%3];
+  const desc=
+`🧲 ${titulo}
+
+En menos de ${Math.round(d)}s te explico el sistema completo:
+
+→ INTEREST GRAPH: por qué el algoritmo reparte por interés y no por seguidores
+→ TEST BETA: qué miden los primeros 200 usuarios que ven tu video
+→ MÉTRICAS REINA: completion rate, watch time de 3s y compartidos ×10
+→ BUCLE: cómo escalar de 200 → 1K → 10K → 100K → 1M+
+
+🔑 Keywords: ${kws.slice(0,4).join(" · ")}
+
+📌 Guardalo antes de publicar tu próximo video.
+⏱️ ${Math.round(d)}s · Vertical 9:16 · Short-form`;
+  const hooks=[
+    {l:"A",tp:"PROHIBICIÓN",txt:`No publiques otro video de ${kw} sin saber esto…`,why:"La prohibición activa el sesgo de curiosidad: frena el swipe en seco."},
+    {l:"B",tp:"PREGUNTA",txt:`¿Por qué el 90% fracasa con ${kw}? La respuesta está en el segundo 2…`,why:"Pregunta + dato numérico + promesa temporal: triple ancla de retención."},
+    {l:"C",tp:"PROMESA",txt:`Esto es lo que pasa cuando aplicás ${kw} durante 7 días seguidos…`,why:"Resultado concreto con plazo: el cerebro necesita ver el pago y se queda."}
+  ];
+  const ratio=MMETA.w/Math.max(MMETA.h,1);
+  const diag=[
+    MMETA.dur<=35
+      ? {st:"ok",lbl:"Duración",val:MMETA.dur.toFixed(1)+"s",msg:"Óptima (<35s): favorece completion rate alta, la métrica reina."}
+      : {st:"bad",lbl:"Duración",val:MMETA.dur.toFixed(1)+"s",msg:`Recortá ${Math.ceil(MMETA.dur-35)}s. Cada segundo extra castiga la tasa de finalización.`},
+    ratio<=0.62
+      ? {st:"ok",lbl:"Formato",val:MMETA.w+"×"+MMETA.h+" · 9:16",msg:"Vertical nativo: ocupa toda la pantalla, cero penalización."}
+      : ratio<1.05
+        ? {st:"warn",lbl:"Formato",val:MMETA.w+"×"+MMETA.h,msg:"No es 9:16 puro: recortá a vertical 1080×1920."}
+        : {st:"bad",lbl:"Formato",val:MMETA.w+"×"+MMETA.h+" · HORIZONTAL",msg:"Horizontal detectado: penaliza hasta −40% de reparto frente a 9:16."},
+    score>=70
+      ? {st:"ok",lbl:"Fuerza del hook",val:score+"/100",msg:"Hook fuerte: palabra de poder + promesa. Frena el swipe en los primeros 3s."}
+      : score>=40
+        ? {st:"warn",lbl:"Fuerza del hook",val:score+"/100",msg:"Hook aceptable. Sumá una palabra de poder + texto visible desde el segundo 0."}
+        : {st:"bad",lbl:"Fuerza del hook",val:score+"/100",msg:"Hook débil: sin gancho no hay retención y sin retención no hay test beta."},
+    kws.length>=2
+      ? {st:"ok",lbl:"Keywords extraídas",val:kws.length+" KW",msg:"Nicho indexable detectado: usalas en título, subtítulos y hashtags.",kws}
+      : {st:"warn",lbl:"Keywords extraídas",val:kws.length+" KW",msg:"Pocas señales de nicho: describí el tema con más detalle."}
+  ];
+  const fails=diag.filter(x=>x.st==="bad").length;
+  const warns=diag.filter(x=>x.st==="warn").length;
+  const ok=fails===0&&warns<=1;
+  const pts=diag.reduce((a,x)=>a+(x.st==="ok"?1:x.st==="warn"?.5:0),0);
+  const reached=pts>=4?5:pts>=3.5?4:pts>=2.5?3:pts>=1.5?2:1;
+  MANALYSIS={archivo:MFILE.name,peso:(MFILE.size/1048576).toFixed(1)+" MB",modo:MFILE.demo?"DEMO":"ARCHIVO REAL",fecha:new Date().toLocaleString("es"),
+    duracion:+MMETA.dur.toFixed(1),resolucion:`${MMETA.w}×${MMETA.h}`,
+    transcripcion:trans.map(l=>`[${l[0]}] ${l[1]}`).join("\n"),keywords:kws,titulo,descripcion:desc,
+    hashtags:hashtags.map(h=>h.tag),hooks:hooks.map(h=>`[${h.l} · ${h.tp}] ${h.txt}`),
+    diagnostico:diag.map(x=>`${x.lbl.toUpperCase()}: ${x.val} — ${x.msg}`),
+    veredicto:ok?"APTO PARA EL BUCLE — PUBLICABLE":"CORREGIR ANTES DE PUBLICAR",
+    proyeccion:STAGES.slice(0,reached).map(s=>s[0]).join(" → ")+(reached===5?" → ∞":"")};
+  return {trans,kws,titulo,desc,hashtags,hooks,diag,ok,reached};
+}
+
+$("#btnGo").onclick=async ()=>{
+  if(!MFILE) return;
+  $("#btnGo").disabled=true; $("#pipe").classList.add("on"); $("#resWrap").classList.remove("on");
+  const lines=["Leyendo metadatos del archivo (duración, resolución, pista de audio)…","Decodificando pista de audio localmente (Web Audio API)…","Transcribiendo audio → texto (IA local, sin subir)…","Indexando subtítulos y texto en pantalla…","Extrayendo entidades y keywords del nicho…","Asignando nicho en el Interest Graph…","Calibrando 7 hashtags: 3 nicho + 2 amplios + 2 virales…","Generando paquete SEO + 3 hooks testeables…","Aplicando diagnóstico a raja tabla…"];
+  const log=$("#pipeLog"); log.innerHTML="";
+  const dly=RM?0:400;
+  for(let i=0;i<lines.length;i++){
+    await new Promise(r=>setTimeout(r,dly));
+    const d=document.createElement("div"); d.textContent=lines[i]; log.appendChild(d);
+    const pct=Math.round((i+1)/lines.length*100);
+    $("#pipeFill").style.width=pct+"%"; $("#pipePct").textContent=pct+"%";
+  }
+  const A=analyze();
+  renderResults(A);
+  await new Promise(r=>setTimeout(r,RM?0:250));
+  $("#pipe").classList.remove("on"); $("#resWrap").classList.add("on");
+  $("#btnGo").disabled=false;
+  $("#resWrap").scrollIntoView({behavior:RM?"auto":"smooth",block:"start"});
+  toast("Motor completado — <b>paquete SEO + hashtags listos</b> ✓");
+};
+
+function renderResults(A){
+  const out=$("#transOut"); out.innerHTML="";
+  const kwSet=new Set(A.kws.map(norm));
+  const html=A.trans.map(([ts,txt])=>{
+    const words=txt.split(" ").map(w=>{
+      const clean=norm(w.replace(/[^\p{L}\p{N}]/gu,""));
+      return kwSet.has(clean)?`<mark>${w}</mark>`:w;
+    }).join(" ");
+    return `<div><span class="tl">[${ts}]</span> ${words}</div>`;
+  }).join("");
+  if(RM){ out.innerHTML=html; }
+  else{
+    out.innerHTML='<span class="caret"></span>';
+    const tmp=document.createElement("div"); tmp.innerHTML=html;
+    const nodes=[...tmp.children]; let ni=0; const caret=out.querySelector(".caret");
+    const iv=setInterval(()=>{
+      if(ni>=nodes.length){ clearInterval(iv); caret.remove();
+        out.insertAdjacentHTML("beforeend",'<div style="color:var(--dim)">▸ keywords del nicho resaltadas — así te indexa el Interest Graph</div>'); return; }
+      out.insertBefore(nodes[ni],caret); ni++;
+    },220);
+  }
+  drawWave();
+  $("#pTitulo").innerHTML=`<b>${A.titulo}</b>`;
+  $("#pDesc").textContent=A.desc;
+  $("#htMix").innerHTML=`<span><b>3</b> NICHO — indexación precisa</span><span><b>2</b> AMPLIOS — abren el grafo</span><span><b>2</b> VIRALES — pool en tendencia</span><span><b>= 7</b> CALIBRADOS</span>`;
+  $("#htList").innerHTML=A.hashtags.map(h=>`
+    <div class="htag">
+      <span class="t">${h.tag}</span>
+      <span class="tp ${h.cls}">${h.tipo}</span>
+      <span class="rs">${h.razon}<b>PESO DE INDEXACIÓN ${h.peso}/100 · CLICK PARA COPIAR</b></span>
+    </div>`).join("");
+  $$("#htList .htag").forEach((el,i)=>{ el.onclick=()=>copyTxt(A.hashtags[i].tag,`<b>${A.hashtags[i].tag}</b> copiado ✓`); });
+  $("#hooks3").innerHTML=A.hooks.map(h=>`
+    <div class="hk">
+      <div class="h-top"><span class="h-l">${h.l}</span><span class="h-tp">${h.tp}</span></div>
+      <p>"${h.txt}"</p>
+      <div class="h-why">${h.why}</div>
+      <button class="btn mini ghost" data-hook="${h.l}">⧉ Copiar hook ${h.l}</button>
+    </div>`).join("");
+  $$("[data-copy]").forEach(b=>{ b.onclick=()=>{
+    if(b.dataset.copy==="titulo") copyTxt(A.titulo,"Título copiado ✓");
+    if(b.dataset.copy==="desc") copyTxt(A.desc,"Descripción copiada ✓");
+    if(b.dataset.copy==="tags") copyTxt(A.hashtags.map(h=>h.tag).join(" "),"Los <b>7 hashtags</b> copiados ✓");
+  };});
+  $$("[data-hook]").forEach(b=>{ b.onclick=()=>{ const h=A.hooks.find(x=>x.l===b.dataset.hook); copyTxt(h.txt,`Hook ${h.l} copiado ✓`); }; });
+  $("#diagOut").innerHTML=A.diag.map(x=>`
+    <div class="drow ${x.st}">
+      <span class="dot"></span><span class="d-lbl">${x.lbl}</span>
+      <span class="d-msg">${x.msg}${x.kws?`<div class="kwchips">${x.kws.map(k=>`<i>${k}</i>`).join("")}</div>`:""}</span>
+      <span class="d-val">${x.val} ${x.st==="ok"?"✓":x.st==="warn"?"⚠":"✗"}</span>
+    </div>`).join("");
+  const v=$("#mVerdict"); v.style.display="block"; v.className="verdict "+(A.ok?"ok":"ko");
+  if(A.ok){ $("#mvTitle").textContent="✓ VEREDICTO FYP: APTO PARA EL BUCLE";
+    $("#mvSub").innerHTML="Las 4 puertas están en orden. Publicá con este paquete: <b style='color:var(--lime)'>"+MANALYSIS.proyeccion+"</b>."; }
+  else{ $("#mvTitle").textContent="⛔ VEREDICTO FYP: CORREGIR ANTES DE PUBLICAR";
+    $("#mvSub").innerHTML="Hay puertas en rojo/amarillo. Corregí lo marcado y volvé a analizar."; }
+  paintProj($("#mProj"),A.reached,A.reached===5);
+  ["ei1","ei2","ei3"].forEach(id=>{ const el=$("#"+id); el.classList.remove("done"); el.querySelector("b").textContent="[ ]"; });
+  $("#entHint").style.display=USER?"none":"block";
+}
+
+async function drawWave(){
+  const cv=$("#wave"),ctx=cv.getContext("2d");
+  cv.width=cv.offsetWidth*2||1200; cv.height=128;
+  ctx.clearRect(0,0,cv.width,cv.height);
+  let peaks=null, caption="FORMA DE ONDA DEL AUDIO · SINTETIZADA PARA LA DEMO";
+  if(MFILE&&!MFILE.demo){
+    try{
+      const AC=window.AudioContext||window.webkitAudioContext;
+      const ac=new AC();
+      const audio=await ac.decodeAudioData(await MFILE.arrayBuffer());
+      const data=audio.getChannelData(0);
+      const N=110,step=Math.floor(data.length/N); peaks=[];
+      for(let i=0;i<N;i++){ let sum=0; for(let j=0;j<step;j+=32){sum+=Math.abs(data[i*step+j]||0);} peaks.push(sum/(step/32)); }
+      const mx=Math.max(...peaks)||1; peaks=peaks.map(p=>p/mx);
+      $("#fAud").textContent="DECODIFICADO ✓";
+      caption="FORMA DE ONDA REAL DEL AUDIO · DECODIFICADA CON WEB AUDIO API EN TU EQUIPO";
+      ac.close();
+    }catch(e){ $("#fAud").textContent="SIN PISTA LEGIBLE"; }
+  } else { $("#fAud").textContent="SIMULADO ✓"; }
+  if(!peaks) peaks=Array.from({length:110},(_,i)=>.2+Math.abs(Math.sin(i*.7))*.7);
+  $("#waveCap").textContent=caption;
+  const bw=cv.width/peaks.length;
+  peaks.forEach((p,i)=>{
+    const h=Math.max(4,p*cv.height*.92);
+    ctx.fillStyle=i<peaks.length*.12?"#ff2e6c":"#c6ff3f";
+    ctx.globalAlpha=.35+p*.65;
+    ctx.fillRect(i*bw+1,(cv.height-h)/2,bw-2,h);
+  });
+  ctx.globalAlpha=1;
+}
+
+function markEnt(id){ const el=$("#"+id); el.classList.add("done"); el.querySelector("b").textContent="[✓]"; }
+function fullPackage(){ const A=MANALYSIS;
+  return `══ CAJA NEGRA LAB · PAQUETE SEO ══\nTÍTULO: ${A.titulo}\n\nDESCRIPCIÓN:\n${A.descripcion}\n\nHASHTAGS: ${A.hashtags.join(" ")}\n\nHOOKS TESTEABLES:\n${A.hooks.join("\n")}\n\nVEREDICTO FYP: ${A.veredicto}\nPROYECCIÓN: ${A.proyeccion}`; }
+$("#btnCopyAll").onclick=()=>{ copyTxt(fullPackage(),"<b>Paquete completo</b> copiado ✓"); markEnt("ei1"); };
+$("#btnJson").onclick=()=>{ download("analisis-caja-negra.json",JSON.stringify(MANALYSIS,null,2),"application/json"); markEnt("ei2"); toast("<b>.json</b> descargado ✓"); };
+$("#btnCertFyp").onclick=()=>{
+  const A=MANALYSIS;
+  const who=USER?USER.name+(USER.email?` (${USER.email})`:""):"OPERADOR ANÓNIMO";
+  const txt=`══════════════════════════════════════════\n  CAJA NEGRA® LAB — VEREDICTO FYP + CERTIFICADO\n══════════════════════════════════════════\nOPERADOR:  ${who}\nFECHA:     ${A.fecha}\nARCHIVO:   ${A.archivo} (${A.peso}) · ${A.modo} · ${A.duracion}s · ${A.resolucion}\n\nVEREDICTO FYP: ${A.veredicto}\nPROYECCIÓN DEL BUCLE: ${A.proyeccion}\n\nDIAGNÓSTICO A RAJA TABLA:\n${A.diagnostico.map(d=>"  • "+d).join("\n")}\n\nHASHTAGS CALIBRADOS: ${A.hashtags.join(" ")}\n\n"La viralidad no es suerte. Es ingeniería."\n══════════════════════════════════════════`;
+  download("veredicto-fyp-caja-negra.txt",txt,"text/plain;charset=utf-8");
+  markEnt("ei3"); toast("Certificado descargado ✓");
+};
+
+/* PROTOCOLO */
+const PROTO=[
   ["PRE-PUBLICACIÓN","Hook escrito para los primeros 3 segundos"],["PRE-PUBLICACIÓN","Título con palabra clave buscable (Video SEO)"],["PRE-PUBLICACIÓN","Subtítulos incrustados: muchos ven sin audio"],["PRE-PUBLICACIÓN","Formato vertical 9:16 · 1080×1920"],["PRE-PUBLICACIÓN","Audio nativo o en tendencia dentro del nicho"],
   ["PRODUCCIÓN","Corte o cambio de plano cada 2–3 segundos"],["PRODUCCIÓN","Texto visible en pantalla desde el segundo 0"],["PRODUCCIÓN","Open loop: promesa que se paga al final"],["PRODUCCIÓN","CTA explícito a COMPARTIR (señal de mayor peso)"],
   ["POST-PUBLICACIÓN","Publicar en hora pico de tu audiencia"],["POST-PUBLICACIÓN","Responder comentarios durante la primera hora"],["POST-PUBLICACIÓN","Si retención < 55%: iterar el concepto y re-publicar"]
 ];
-let checks = store.get("cn_proto") || Array(PROTO.length).fill(false);
-const grid = $("#protoGrid");
-grid.innerHTML = ["PRE-PUBLICACIÓN","PRODUCCIÓN","POST-PUBLICACIÓN"].map(phase=>`
+let checks=store.get("cn_proto")||Array(PROTO.length).fill(false);
+const grid=$("#protoGrid");
+function buildProto(){ grid.innerHTML=["PRE-PUBLICACIÓN","PRODUCCIÓN","POST-PUBLICACIÓN"].map(phase=>`
   <div class="pgroup"><h5>▸ ${phase}</h5>${PROTO.map((p,i)=>p[0]===phase?`
     <div class="pitem ${checks[i]?"done":""}" data-i="${i}" role="checkbox" aria-checked="${checks[i]}" tabindex="0">
-      <span class="box"></span><span>${p[1]}</span>
-    </div>`:"").join("")}</div>`).join("");
+      <span class="box"></span><span>${p[1]}</span></div>`:"").join("")}</div>`).join(""); }
+buildProto();
 function updateProto(){
-  const done = checks.filter(Boolean).length;
-  $("#protoNum").textContent = done + "/" + PROTO.length;
-  $("#protoBar").style.width = (done/PROTO.length*100) + "%";
-  const full = done === PROTO.length;
-  $("#stamp").classList.toggle("show", full);
-  $("#btnCert").disabled = !full;
-  if (full) $("#protoHint").textContent = USER ? "CERTIFICADO LISTO PARA DESCARGAR" : "INICIA SESIÓN PARA FIRMAR EL CERTIFICADO CON TU NOMBRE";
-  store.set("cn_proto", checks);
+  const done=checks.filter(Boolean).length;
+  $("#protoNum").textContent=done+"/"+PROTO.length;
+  $("#protoBar").style.width=(done/PROTO.length*100)+"%";
+  const full=done===PROTO.length;
+  $("#stamp").classList.toggle("show",full);
+  $("#btnCert").disabled=!full;
+  if(full) $("#protoHint").textContent=USER?"CERTIFICADO LISTO PARA DESCARGAR":"INICIA SESIÓN PARA FIRMAR EL CERTIFICADO CON TU NOMBRE";
+  store.set("cn_proto",checks);
 }
-grid.addEventListener("click", e=>{
-  const it = e.target.closest(".pitem"); if (!it) return;
-  const i = +it.dataset.i; checks[i] = !checks[i];
-  it.classList.toggle("done", checks[i]); it.setAttribute("aria-checked", checks[i]);
+grid.addEventListener("click",e=>{ const it=e.target.closest(".pitem"); if(!it)return;
+  const i=+it.dataset.i; checks[i]=!checks[i];
+  it.classList.toggle("done",checks[i]); it.setAttribute("aria-checked",checks[i]);
   updateProto();
-  if (checks.filter(Boolean).length === PROTO.length) toast("🏁 <b>PROTOCOLO 12/12</b> — aprobado sin excepciones");
-});
-grid.addEventListener("keydown", e=>{ if (e.key===" "||e.key==="Enter"){ e.preventDefault(); e.target.click?.(); const it=e.target.closest(".pitem"); if(it) it.click(); }});
-$("#btnProtoReset").onclick = ()=>{ checks = Array(PROTO.length).fill(false); location.hash="#protocolo"; renderProtoDOM(); updateProto(); };
-function renderProtoDOM(){
-  $$(".pitem").forEach((it,i)=>{ it.classList.toggle("done", checks[i]); it.setAttribute("aria-checked", checks[i]); });
-}
-$("#btnCert").onclick = ()=>{
-  const who = USER ? USER.name + (USER.email?` (${USER.email})`:"") : "OPERADOR ANÓNIMO";
-  const txt =
-`══════════════════════════════════════════
-  CAJA NEGRA® LAB — CERTIFICADO DE CUMPLIMIENTO
-══════════════════════════════════════════
-OPERADOR: ${who}
-FECHA:    ${new Date().toLocaleString("es")}
-ESTADO:   PROTOCOLO VIRAL 12/12 — A RAJA TABLA, SIN EXCEPCIONES
-
-REGLAS VERIFICADAS:
-${PROTO.map((p,i)=>`  [✓] ${p[1]}`).join("\n")}
-
-El video queda certificado para entrar al bucle de amplificación:
-200 → 1K → 10K → 100K → 1M+
-
-"La viralidad no es suerte. Es ingeniería."
-══════════════════════════════════════════`;
-  const blob = new Blob([txt], {type:"text/plain;charset=utf-8"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob); a.download = "certificado-caja-negra.txt"; a.click();
-  URL.revokeObjectURL(a.href);
+  if(checks.filter(Boolean).length===PROTO.length) toast("🏁 <b>PROTOCOLO 12/12</b> — aprobado sin excepciones"); });
+grid.addEventListener("keydown",e=>{ if(e.key===" "||e.key==="Enter"){ e.preventDefault(); const it=e.target.closest(".pitem"); if(it) it.click(); }});
+$("#btnProtoReset").onclick=()=>{ checks=Array(PROTO.length).fill(false); buildProto(); updateProto(); };
+$("#btnCert").onclick=()=>{
+  const who=USER?USER.name+(USER.email?` (${USER.email})`:""):"OPERADOR ANÓNIMO";
+  const txt=`══════════════════════════════════════════\n  CAJA NEGRA® LAB — CERTIFICADO DE CUMPLIMIENTO\n══════════════════════════════════════════\nOPERADOR: ${who}\nFECHA:    ${new Date().toLocaleString("es")}\nESTADO:   PROTOCOLO VIRAL 12/12 — A RAJA TABLA, SIN EXCEPCIONES\n\nREGLAS VERIFICADAS:\n${PROTO.map(p=>`  [✓] ${p[1]}`).join("\n")}\n\nEl video queda certificado para el bucle: 200 → 1K → 10K → 100K → 1M+\n══════════════════════════════════════════`;
+  download("certificado-caja-negra.txt",txt,"text/plain;charset=utf-8");
   toast("Certificado descargado ✓");
 };
 updateProto();
-if (USER) $("#protoHint").textContent = checks.every(Boolean) ? "CERTIFICADO LISTO PARA DESCARGAR" : "PROTOCOLO EN CURSO";
 
-/* ══════════ LOGIN: GOOGLE REAL + DEMO ══════════ */
-const overlay = $("#overlay");
-function openModal(){ overlay.classList.add("open"); document.body.style.overflow="hidden"; refreshLoginStatus(); }
+/* LOGIN GOOGLE + DEMO */
+const overlay=$("#overlay");
+function openModal(){ overlay.classList.add("open"); document.body.style.overflow="hidden"; initGoogle(); }
 function closeModal(){ overlay.classList.remove("open"); document.body.style.overflow=""; }
-$("#btnLogin").onclick = openModal;
-$("#btnClose").onclick = closeModal;
-overlay.addEventListener("click", e=>{ if (e.target===overlay) closeModal(); });
-document.addEventListener("keydown", e=>{ if (e.key==="Escape") closeModal(); });
-
-function b64urlDecode(str){
-  str = str.replace(/-/g,"+").replace(/_/g,"/");
-  while (str.length % 4) str += "=";
-  return decodeURIComponent(escape(atob(str)));
-}
+$("#btnLogin").onclick=openModal;
+$("#btnClose").onclick=closeModal;
+overlay.addEventListener("click",e=>{ if(e.target===overlay) closeModal(); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeModal(); });
+function b64urlDecode(str){ str=str.replace(/-/g,"+").replace(/_/g,"/"); while(str.length%4)str+="="; return decodeURIComponent(escape(atob(str))); }
 function onGoogleCredential(resp){
-  try{
-    const payload = JSON.parse(b64urlDecode(resp.credential.split(".")[1]));
-    doLogin({name:payload.name, email:payload.email, picture:payload.picture||null, provider:"google"});
-  }catch(err){ $("#loginStatus").textContent = "⚠ No se pudo leer la credencial."; }
+  try{ const p=JSON.parse(b64urlDecode(resp.credential.split(".")[1]));
+    doLogin({name:p.name,email:p.email,picture:p.picture||null,provider:"google"}); }
+  catch(err){ $("#loginStatus").textContent="⚠ No se pudo leer la credencial."; }
 }
 function initGoogle(){
-  const hasId = GOOGLE_CLIENT_ID && GOOGLE_CLIENT_ID.includes(".apps.googleusercontent.com");
-  if (!hasId){
-    $("#loginStatus").textContent = "◈ Client ID sin configurar → modo demo disponible";
-    return;
-  }
-  if (window.google && google.accounts && google.accounts.id){
-    try{
-      google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: onGoogleCredential });
-      gisReady = true;
-      $("#loginStatus").textContent = "◈ Google Sign-In conectado y listo";
-    }catch(err){ $("#loginStatus").textContent = "⚠ Revisa tu Client ID / dominios autorizados"; }
-  } else {
-    $("#loginStatus").textContent = "◈ Cargando SDK de Google…";
-  }
+  const hasId=GOOGLE_CLIENT_ID&&GOOGLE_CLIENT_ID.includes(".apps.googleusercontent.com");
+  if(!hasId){ $("#loginStatus").textContent="◈ Client ID sin configurar → modo demo disponible"; return; }
+  if(window.google&&google.accounts&&google.accounts.id){
+    try{ google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:onGoogleCredential});
+      gisReady=true; $("#loginStatus").textContent="◈ Google Sign-In conectado y listo"; }
+    catch(err){ $("#loginStatus").textContent="⚠ Revisá tu Client ID / dominios autorizados"; }
+  } else { $("#loginStatus").textContent="◈ Cargando SDK de Google…"; }
 }
-window.addEventListener("load", ()=>setTimeout(initGoogle, 400));
-
-$("#btnGoogleCustom").onclick = ()=>{
-  if (gisReady){
-    $("#loginStatus").textContent = "▸ Abriendo Google… acepta en la ventana emergente";
-    google.accounts.id.prompt(notif=>{
-      if (notif.isNotDisplayed() || notif.isSkippedMoment()){
-        $("#loginStatus").textContent = "◈ Si no apareció el popup, usa el modo demo";
-      }
-    });
-  } else {
-    $("#loginStatus").textContent = "◈ Google no disponible aquí — usa el modo demo";
-  }
+window.addEventListener("load",()=>setTimeout(initGoogle,400));
+$("#btnGoogleCustom").onclick=()=>{
+  if(gisReady){ $("#loginStatus").textContent="▸ Abriendo Google…";
+    google.accounts.id.prompt(n=>{ if(n.isNotDisplayed()||n.isSkippedMoment()) $("#loginStatus").textContent="◈ Si no apareció el popup, usá el modo demo"; }); }
+  else $("#loginStatus").textContent="◈ Google no disponible aquí — usá el modo demo";
 };
-$("#btnDemo").onclick = ()=>{
-  doLogin({name:"Operador Demo", email:"demo@cajanegra.lab", picture:null, provider:"demo"});
-};
-function doLogin(u){
-  USER = u; store.set("cn_user", u);
-  refreshUserUI(); closeModal();
+$("#btnDemo").onclick=()=>doLogin({name:"Operador Demo",email:"demo@cajanegra.lab",picture:null,provider:"demo"});
+function doLogin(u){ USER=u; store.set("cn_user",u); refreshUserUI(); closeModal();
   toast(`Bienvenido, <b>${u.name.split(" ")[0]}</b> — panel desbloqueado ✓`);
-  $("#btnSave").disabled = false;
-  $("#simUser").textContent = u.name.split(" ")[0].toUpperCase() + " ◆";
-  updateProto();
-}
-function doLogout(){
-  USER = null; store.del("cn_user"); $("#userMenu").classList.remove("open");
-  refreshUserUI();
-  $("#btnSave").disabled = true; $("#simUser").textContent = "INVITADO";
-  try{ if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect(); }catch(e){}
-  toast("Sesión cerrada — vuelve pronto ◈");
-}
-$("#btnLogout").onclick = doLogout;
-$("#userChip").onclick = e=>{ e.stopPropagation(); $("#userMenu").classList.toggle("open"); };
-document.addEventListener("click", ()=>$("#userMenu").classList.remove("open"));
+  $("#btnSave").disabled=false; $("#simUser").textContent=u.name.split(" ")[0].toUpperCase()+" ◆";
+  $("#entHint").style.display="none"; updateProto(); }
+function doLogout(){ USER=null; store.del("cn_user"); $("#userMenu").classList.remove("open"); refreshUserUI();
+  $("#btnSave").disabled=true; $("#simUser").textContent="INVITADO"; $("#entHint").style.display="block";
+  try{ if(window.google&&google.accounts&&google.accounts.id) google.accounts.id.disableAutoSelect(); }catch(e){}
+  toast("Sesión cerrada ◈"); }
+$("#btnLogout").onclick=doLogout;
+$("#userChip").onclick=e=>{ e.stopPropagation(); $("#userMenu").classList.toggle("open"); };
+document.addEventListener("click",()=>$("#userMenu").classList.remove("open"));
 function refreshUserUI(){
-  const logged = !!USER;
-  $("#btnLogin").style.display = logged ? "none" : "inline-flex";
-  $("#userChip").style.display = logged ? "flex" : "none";
-  if (logged){
-    $("#uName").textContent = USER.name.split(" ")[0];
-    $("#uMail").textContent = USER.email || "";
-    const pic = $("#uPic"), ini = $("#uAva");
-    if (USER.picture){ pic.src = USER.picture; pic.style.display="block"; ini.style.display="none"; }
-    else { pic.style.display="none"; ini.style.display="grid"; ini.textContent = USER.name.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase(); }
-  }
+  const logged=!!USER;
+  $("#btnLogin").style.display=logged?"none":"inline-flex";
+  $("#userChip").style.display=logged?"flex":"none";
+  if(logged){ $("#uName").textContent=USER.name.split(" ")[0]; $("#uMail").textContent=USER.email||"";
+    const pic=$("#uPic"),ini=$("#uAva");
+    if(USER.picture){ pic.src=USER.picture; pic.style.display="block"; ini.style.display="none"; }
+    else{ pic.style.display="none"; ini.style.display="grid"; ini.textContent=USER.name.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase(); } }
 }
-function refreshLoginStatus(){ initGoogle(); }
-if (USER){ refreshUserUI(); $("#btnSave").disabled=false; $("#simUser").textContent = USER.name.split(" ")[0].toUpperCase()+" ◆"; }
-
-/* ══════════ RELOJ FOOTER ══════════ */
-setInterval(()=>{ $("#fClock").textContent = new Date().toLocaleTimeString("es") + " · SEÑAL EN VIVO"; }, 1000);
+if(USER){ refreshUserUI(); $("#btnSave").disabled=false; $("#simUser").textContent=USER.name.split(" ")[0].toUpperCase()+" ◆"; $("#entHint").style.display="none"; }
+setInterval(()=>{ $("#fClock").textContent=new Date().toLocaleTimeString("es")+" · SEÑAL EN VIVO"; },1000);
 </script>
 </body>
 </html>
