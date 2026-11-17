@@ -1731,6 +1731,13 @@ footer p{
   }
 }
 </style>
+
+<style>
+#top-nav a.nav-selected{border-color:#a855f7!important;background:rgba(168,85,247,.28)!important;box-shadow:0 0 0 2px #22d3ee,0 0 18px rgba(168,85,247,.65)!important;outline:2px solid #22d3ee!important}
+.tooltip-bar.legend-blink{animation:legendBlink .45s ease-in-out 3;border-color:#22d3ee!important}
+@keyframes legendBlink{0%,100%{transform:scale(1);box-shadow:0 0 0 rgba(34,211,238,0)}50%{transform:scale(1.02);box-shadow:0 0 22px rgba(34,211,238,.8)}}
+.legend-enter-pill{display:inline-block;margin-left:10px;padding:6px 12px;border-radius:999px;background:#22d3ee;color:#07080F;font-weight:800;cursor:pointer;animation:legendBlink .45s ease-in-out 3;white-space:nowrap}
+</style>
 </head>
 <body>
   <div id="root"></div>
@@ -1746,5 +1753,62 @@ Error generating stack: `+u.message+`
 </script>
   <script>(function(){function m(a){var h=a.getAttribute("href");if(!h)return;try{var u=new URL(h,document.baseURI);if(((u.protocol==="http:"||u.protocol==="https:")&&u.host!==location.host)||u.protocol==="mailto:"||u.protocol==="tel:"||u.protocol==="sms:"){a.target="_blank";a.rel="noopener noreferrer";}}catch(e){}}function s(){document.querySelectorAll("a[href]").forEach(m);}if(document.readyState!=="loading"){s();}else{document.addEventListener("DOMContentLoaded",s);}document.addEventListener("click",function(e){var a=e.target&&e.target.closest&&e.target.closest("a[href]");if(a){m(a);}},true);})();</script>
   <script type="application/json" data-clippy-inline-media-manifest="1">{"version":1,"slots":[]}</script>
+
+<script>
+(function(){
+var MAP=[
+["Demo Comercial","Demo Comercial: mirá cómo se ve tu tienda online terminada, lista para vender."],
+["Manual Anti-Estafas","Manual Anti-Estafas: guía para que tus clientes compren con confianza y sin miedo."],
+["Convertidor Gratis","Convertidor Gratis de Archivos: herramienta gratuita para atraer visitas y convertirlas en clientes."],
+["Quiénes Somos","Quiénes Somos: SolarSystemArg Lab. Armamos tiendas online (stores) a medida, divertidas y que venden."],
+["Vinoteca","Demo Tienda Vinoteca / Cotillón: tienda para vinoteca y cotillón, ideal para eventos, fiestas y casamientos. Pago con Mercado Pago y transferencia, con validación de pago manual."],
+["Odontología","Demo Odontología: sistema para consultorios con asignación de turnos, fichas de pacientes y confirmación."],
+["Tattoo","Studio Tattoo & Piercing: sistema para locales de tattoo y piercings con reserva de turnos, artistas y diseños."],
+["Mercado Tienda","Mercado Tienda QR — Recuperar Clientes: tienda para vendedores de Mercado Libre que quieren crear su propia cartera de clientes. QR, campañas masivas, cupones y reparto."],
+["Control de Cultivo","Control de Cultivo: sistema para llevar el control de tu cultivo, seguimiento, registros y organización."],
+["Bandas","Bandas & Artistas: venta de merchandising y entradas para bandas y artistas."],
+["50% OFF","OFERTA 50% OFF: cupón de descuento para desarrollo y diseño de sistema a medida. Tocá otra vez y te atendemos por WhatsApp."],
+];
+function legendFor(a){var txt=(a.textContent||"").trim();for(var i=0;i<MAP.length;i++){if(txt.indexOf(MAP[i][0])!==-1) return MAP[i][1];}return "Tocá otra vez para entrar a este sistema.";}
+var selected=null;
+function clearSel(){if(selected){selected.classList.remove("nav-selected");selected=null;}}
+function showLegend(a){
+  var bar=document.querySelector(".tooltip-bar"); if(!bar) return;
+  bar.classList.remove("legend-blink"); void bar.offsetWidth; bar.classList.add("legend-blink");
+  // keep original structure simple: set text + pill
+  bar.innerHTML="";
+  var span=document.createElement("span"); span.textContent=legendFor(a); bar.appendChild(span);
+  var pill=document.createElement("span"); pill.className="legend-enter-pill"; pill.textContent="👉 TOCÁ OTRA VEZ PARA ENTRAR";
+  pill.addEventListener("click",function(e){e.stopPropagation(); go(a);});
+  bar.appendChild(pill);
+}
+function go(a){
+  var href=a.getAttribute("href"); if(!href) return;
+  if(href.charAt(0)==="#"){ var el=document.querySelector(href); if(el) el.scrollIntoView({behavior:"smooth"}); else location.hash=href; }
+  else { window.open(href,"_blank","noopener"); }
+  clearSel();
+}
+function bind(){
+  var links=document.querySelectorAll("#top-nav a");
+  if(!links.length) return;
+  links.forEach(function(a){
+    if(a.dataset.doubleTapBound) return; a.dataset.doubleTapBound="1";
+    a.addEventListener("click",function(e){
+      if(selected!==a){ e.preventDefault(); e.stopPropagation();
+        document.querySelectorAll("#top-nav a.nav-selected").forEach(function(x){x.classList.remove("nav-selected");});
+        selected=a; a.classList.add("nav-selected"); showLegend(a);
+      } else { // second tap -> allow, but handle manually to keep behaviour
+        e.preventDefault(); go(a);
+      }
+    },true);
+  });
+}
+document.addEventListener("click",function(e){
+  if(!e.target.closest("#top-nav") && !e.target.closest(".tooltip-bar")) clearSel();
+});
+setInterval(bind,800); bind();
+})();
+</script>
+
 </body>
 </html>
